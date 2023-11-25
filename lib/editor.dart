@@ -1,15 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_editor/canvasx.dart';
+import 'package:image_editor/capture.dart';
 import 'package:image_editor/image_model.dart';
 import 'package:image_editor/image_picker.dart';
-import 'package:image_editor/permissions.dart';
-import 'package:image_editor/picked_images.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:image_editor/kits/master.dart';
+import 'package:image_editor/save_kit.dart';
 
 class Editor extends StatefulWidget {
   const Editor({super.key});
@@ -18,67 +15,107 @@ class Editor extends StatefulWidget {
   State<Editor> createState() => _EditorState();
 }
 
-Future<String> createFolder(String folderName) async {
-  final dir = Directory(
-      '${(Platform.isAndroid ? Directory("storage/emulated/0/Pictures") //FOR ANDROID
-              : await getApplicationSupportDirectory() //FOR IOS
-          ).path}/$folderName');
-  var status = await Permission.storage.status;
-  if (!status.isGranted) {
-    await Permission.storage.request();
-  }
-  if ((await dir.exists())) {
-    return dir.path;
-  } else {
-    dir.create();
-    return dir.path;
-  }
+List<File> _selectedImages = [];
+Map<int, double> xPosition = {};
+Map<int, double> yPosition = {};
+Map<int, double> scale = {};
+Map<int, double> rotate = {};
+Map<int, Size> imgSize = {};
+
+int pickedImage = 0;
+GlobalKey globalKey = GlobalKey();
+capture() {
+  Future<Uint8List> kit = Capture(key: globalKey).png();
+  SaveKit(millisec: DateTime.now().millisecond, kit: kit).saveImg();
 }
-
-_saveImg(img) async {
-  String folder = await createFolder("myImgEditor");
-
-  var f = await File(
-    "$folder/imageq350.png",
-  ).writeAsBytes(await img!);
-}
-
-Future? _selectedImage;
 
 class _EditorState extends State<Editor> {
-  double startX = 1.0;
-  double endX = 1.0;
-  Map<int, double> xPosition = {};
-  Map<int, double> yPosition = {};
-  int pickedImage = -1;
+  reset() {
+    double maxWidth = MediaQuery.of(context).size.width;
+    xPosition.update(pickedImage, (val) => maxWidth,
+        ifAbsent: () => maxWidth);
+    yPosition.update(pickedImage, (val) => maxWidth * .5,
+        ifAbsent: () => maxWidth * .5);
+    scale.update(pickedImage, (val) => 0.5, ifAbsent: () => 0.5);
+    rotate.update(pickedImage, (val) => 0.0, ifAbsent: () => 0.0);
+  }
+
+  bool done = false;
+  initPositions() {
+    if (!done) {
+      reset();
+    }
+    done = true;
+  }
+
   @override
   Widget build(BuildContext context) {
+    initPositions();
+    double maxWidth = MediaQuery.of(context).size.width;
+
+    addImageToList() async {
+      PickImg pickImg = PickImg();
+      File file = await pickImg.fromGallery(maxWidth);
+      Size s = await pickImg.imageDimension(file);
+      setState(() {
+        _selectedImages.add(file);
+        pickedImage = _selectedImages.length - 1;
+        xPosition.update(pickedImage, (val) => maxWidth, ifAbsent: () => maxWidth);
+        yPosition.update(pickedImage, (val) => maxWidth * .5,
+            ifAbsent: () => maxWidth * .5);
+        scale.update(pickedImage, (val) => 1, ifAbsent: () => 1);
+        rotate.update(pickedImage, (val) => 0.0, ifAbsent: () => 0.0);
+        imgSize.update(pickedImage, (val) => s, ifAbsent: () => s);
+      });
+    }
+
     List<Widget> btns() => [
-          ElevatedButton(
-            style: const ButtonStyle(),
-            onPressed: () {
-              setState(() {
-                _selectedImage = PickImg().fromGallery();
-              });
-            },
-            child: const Text("add image"),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                style: const ButtonStyle(),
+                onPressed: () {
+                  addImageToList();
+                },
+                child: const Text("add image"),
+              ),
+              ElevatedButton(
+                style: const ButtonStyle(),
+                onPressed: () {
+                  capture();
+                },
+                child: const Text("capture"),
+              ),
+              ElevatedButton(
+                style: const ButtonStyle(),
+                onPressed: () {
+                  setState(() {
+                    reset();
+                  });
+                },
+                child: const Text("reset"),
+              ),
+            ],
           ),
           Column(
             children: [
               Slider(
-                min: 0.0,
-                max: MediaQuery.of(context).size.width - 100.0,
-                value: xPosition[pickedImage] ?? 0.0,
+                // x position
+                max: maxWidth * 1.8,
+                value: xPosition[pickedImage]!,
                 onChanged: (value) {
                   setState(() {
-                    xPosition.update(pickedImage, (val) => value,
-                        ifAbsent: () => value);
+                    maxWidth = value;
+                    xPosition.update(pickedImage, (val) => maxWidth,
+                        ifAbsent: () => maxWidth);
                   });
                 },
               ),
               Slider(
-                min: 0.0,
-                max: MediaQuery.of(context).size.width - 100.0,
+                // y position
+                thumbColor: Colors.amber,
+                max: maxWidth * 1.3,
                 value: yPosition[pickedImage] ?? 0.0,
                 onChanged: (value) {
                   setState(() {
@@ -87,29 +124,75 @@ class _EditorState extends State<Editor> {
                   });
                 },
               ),
+              Slider(
+                // scale
+                thumbColor: Colors.red,
+                min: .1,
+                max: 1.0,
+                value: scale[pickedImage] ?? 1.0,
+                onChanged: (value) {
+                  setState(() {
+                    scale.update(pickedImage, (val) => value,
+                        ifAbsent: () => value);
+                  });
+                },
+              ),
+              Slider(
+                // rotate
+                thumbColor: Colors.green,
+                min: 0.0,
+                max: 360.0,
+                value: rotate[pickedImage] ?? 1.0,
+                onChanged: (value) {
+                  setState(() {
+                    rotate.update(pickedImage, (val) => value,
+                        ifAbsent: () => value);
+                  });
+                },
+              ),
             ],
           )
         ];
-    List<Widget> images = [
-      Container(
-        width: 100,
-        height: 100,
-        color: Colors.green,
-      ),
-      Container(
-        width: 100,
-        height: 100,
-        color: Colors.red,
-      ),
-    ];
+
     return Column(
       children: [
         AspectRatio(
           aspectRatio: 1 / 1,
           child: Stack(
             children: [
-              CanvasX(),
+              RepaintBoundary(
+                key: globalKey,
+                child: Stack(
+                  children: [
+                    const CanvasX(),
+                    ClipPath(
+                      clipper: Master(pants: false),
+                      child: ImageModel(
+                        size: imgSize,
+                        scale: scale,
+                        rotate: rotate,
+                        pickedIndex: pickedImage,
+                        width: maxWidth,
+                        leftPosition: xPosition,
+                        topPosition: yPosition,
+                        getIndex: (index) {
+                          setState(() {
+                            pickedImage = index;
+                          });
+                        },
+                        children: _selectedImages,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               ImageModel(
+                size: imgSize,
+                scale: scale,
+                rotate: rotate,
+                pickedIndex: pickedImage,
+                width: maxWidth,
+                activeStroke: true,
                 leftPosition: xPosition,
                 topPosition: yPosition,
                 getIndex: (index) {
@@ -117,7 +200,7 @@ class _EditorState extends State<Editor> {
                     pickedImage = index;
                   });
                 },
-                children: images,
+                children: _selectedImages,
               ),
             ],
           ),

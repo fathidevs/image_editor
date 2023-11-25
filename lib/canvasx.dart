@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:image_editor/kits.dart';
 
 
 class CanvasX extends StatefulWidget {
@@ -22,8 +23,8 @@ class _CanvasXState extends State<CanvasX> {
         alignment: Alignment.center,
         width: 100,
         height: 100,
-        color: Colors.amber,
-        child: const Text("Kits canvas"),
+        color: Colors.transparent,
+        child: const Kits(),
       ),
     );
   }
