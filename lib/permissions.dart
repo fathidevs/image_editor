@@ -15,9 +15,7 @@ class Permish {
   getPermission(Permission permission) async{
     PermissionStatus isDenied = await status(permission);
       var v=await Permission.manageExternalStorage.request()
-      .catchError((e)async{
-
-      });
+      ;
       toast("Permission: ${(v)}");
     if(isDenied.isDenied){
       

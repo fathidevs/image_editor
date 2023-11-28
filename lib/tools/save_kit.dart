@@ -37,7 +37,7 @@ class SaveKit {
   saveImg() async {
     String folder = await _createFolder();
 
-    var f = await File(
+    await File(
       "$folder/$kitName$millisec.$kitFormat",
     ).writeAsBytes(await kit);
   }

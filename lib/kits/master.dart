@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:image_editor/kits/pants.dart';
 import 'package:image_editor/kits/shirt.dart';

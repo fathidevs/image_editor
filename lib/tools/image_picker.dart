@@ -2,17 +2,15 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PickImg {
-  
-  
-  Future fromGallery(double maxWidth) async {
+  Future fromGallery() async {
     final returnImage = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      
     );
-    //  await ImagePicker().
+
     if (returnImage == null) return;
 
     return File(returnImage.path);
