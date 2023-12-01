@@ -6,14 +6,12 @@ class ImagesContainer extends StatelessWidget {
   final File content;
   final Map<String, double?> dimensions;
   final Map<String, double?> position;
-  
 
   const ImagesContainer({
     super.key,
     required this.content,
     required this.dimensions,
     required this.position,
-    
   });
 
   @override

@@ -5,82 +5,32 @@ import 'package:image_editor/editor/images_container.dart';
 import 'package:image_editor/kits/kits.dart';
 import 'package:image_editor/kits/master.dart';
 
-class KitCanvas extends StatefulWidget {
+class KitCanvas extends StatelessWidget {
   final List<File> images;
-  final List<Map<String, double?>> imageDimensions;
+  final List<Map<String, double?>> imagesDimension;
   final List<Map<String, double?>> imagesPosition;
-  final List<Map<String, double?>> imageAngle;
-  final Function onImagePicked;
-  final int pickedImageIndex;
+  final List<Map<String, double?>> imagesAngle;
 
   const KitCanvas({
     super.key,
     required this.images,
-    required this.imageDimensions,
+    required this.imagesDimension,
     required this.imagesPosition,
-    required this.onImagePicked,
-    required this.pickedImageIndex,
-    required this.imageAngle,
+    required this.imagesAngle,
   });
 
   @override
-  State<KitCanvas> createState() => _KitCanvasState();
-}
-
-class _KitCanvasState extends State<KitCanvas> {
-  int pickedIndex = -1;
-  @override
   Widget build(BuildContext context) {
-    List<Positioned> images = List.generate(widget.images.length, (i) {
+    List<Positioned> listOfImages = List.generate(images.length, (i) {
       return Positioned(
-        left: widget.imagesPosition[i]['x'],
-        top: widget.imagesPosition[i]['y'],
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              pickedIndex = i;
-              widget.onImagePicked(i);
-            });
-          },
-          child: Transform.rotate(
-            angle: (widget.imageAngle[i]['a']! / 180.0) * pi,
-            child: ImagesContainer(
-              dimensions: widget.imageDimensions[i],
-              position: widget.imagesPosition[i],
-              content: widget.images[i],
-            ),
-          ),
-        ),
-      );
-    });
-    List<Widget> indicator = List.generate(widget.images.length, (i) {
-      return Positioned(
-        left: widget.imagesPosition[i]['x'],
-        top: widget.imagesPosition[i]['y'],
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              pickedIndex = i;
-              widget.onImagePicked(i);
-            });
-          },
-          child: Transform.rotate(
-            angle: (widget.imageAngle[i]['a']! / 180.0) * pi,
-            child: Container(
-              decoration: BoxDecoration(
-                border: pickedBorder(widget.pickedImageIndex > pickedIndex
-                    ? widget.pickedImageIndex == i
-                    : pickedIndex == i),
-              ),
-              child: Opacity(
-                opacity: 0.1,
-                child: ImagesContainer(
-                  dimensions: widget.imageDimensions[i],
-                  position: widget.imagesPosition[i],
-                  content: widget.images[i],
-                ),
-              ),
-            ),
+        left: imagesPosition[i]['x'],
+        top: imagesPosition[i]['y'],
+        child: Transform.rotate(
+          angle: (imagesAngle[i]['a']! / 180.0) * pi,
+          child: ImagesContainer(
+            dimensions: imagesDimension[i],
+            position: imagesPosition[i],
+            content: images[i],
           ),
         ),
       );
@@ -90,19 +40,8 @@ class _KitCanvasState extends State<KitCanvas> {
       aspectRatio: 1 / 1,
       child: Stack(children: [
         const Kits(),
-        ClipPath(clipper: Master(), child: Stack(children: images)),
-        Stack(children: indicator),
+        ClipPath(clipper: Master(), child: Stack(children: listOfImages)),
       ]),
     );
-  }
-
-  Border pickedBorder(bool picked) {
-    if (picked) {
-      return Border.all(
-          color: Colors.green,
-          strokeAlign: BorderSide.strokeAlignOutside,
-          width: 2);
-    }
-    return Border.all(color: Colors.transparent, width: 0.0);
   }
 }
