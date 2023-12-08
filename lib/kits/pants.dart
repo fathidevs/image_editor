@@ -5,19 +5,15 @@ class Pants extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path path = Path();
 
-    path.moveTo(size.width*0.3112500,size.height*0.3040000);
-    path.lineTo(size.width*0.3112500,size.height*0.3980000);
-    path.lineTo(size.width*0.3737500,size.height*0.4000000);
-    path.lineTo(size.width*0.3737500,size.height*0.6020000);
-    path.lineTo(size.width*0.5637500,size.height*0.6020000);
-    path.lineTo(size.width*0.5637500,size.height*0.4000000);
-    path.lineTo(size.width*0.6225000,size.height*0.4020000);
-    path.lineTo(size.width*0.6262500,size.height*0.3000000);
-    path.lineTo(size.width*0.5000000,size.height*0.3020000);
-    path.lineTo(size.width*0.4987500,size.height*0.3600000);
-    path.lineTo(size.width*0.4362500,size.height*0.3580000);
-    path.lineTo(size.width*0.4350000,size.height*0.3000000);
-    path.lineTo(size.width*0.3112500,size.height*0.3040000);
+    path.moveTo(size.width*0.3725000,size.height*0.6450000);
+    path.lineTo(size.width*0.3712500,size.height*0.8500000);
+    path.lineTo(size.width*0.4350000,size.height*0.8459800);
+    path.lineTo(size.width*0.4362500,size.height*0.7434800);
+    path.lineTo(size.width*0.4975000,size.height*0.7454800);
+    path.lineTo(size.width*0.4975000,size.height*0.8500000);
+    path.lineTo(size.width*0.5625000,size.height*0.8459800);
+    path.lineTo(size.width*0.5612500,size.height*0.6470000);
+    path.lineTo(size.width*0.3725000,size.height*0.6450000);
     path.close();
     return path;
   }

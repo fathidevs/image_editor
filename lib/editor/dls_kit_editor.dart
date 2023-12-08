@@ -273,6 +273,7 @@ class _DlsKitEditorState extends State<DlsKitEditor> {
         imageModel.positions = imageModel.centerImage();
         imageModel.angle = {'a': 0.0};
         imageModel.getShape = imageModel.shape();
+        imageModel.clippedTo = Master.allClips();
 
         models.add(imageModel);
         pickedImageIndex = models.length - 1;
