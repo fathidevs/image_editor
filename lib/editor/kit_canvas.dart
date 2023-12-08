@@ -1,36 +1,31 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:image_editor/editor/images_container.dart';
+import 'package:image_editor/editor/image_model.dart';
+import 'package:image_editor/editor/image_container.dart';
 import 'package:image_editor/kits/kits.dart';
 import 'package:image_editor/kits/master.dart';
 
 class KitCanvas extends StatelessWidget {
-  final List<File> images;
-  final List<Map<String, double?>> imagesDimension;
-  final List<Map<String, double?>> imagesPosition;
-  final List<Map<String, double?>> imagesAngle;
+  final List<ImageModel> models;
+
+  // final Map<String, bool> selectKit;
 
   const KitCanvas({
     super.key,
-    required this.images,
-    required this.imagesDimension,
-    required this.imagesPosition,
-    required this.imagesAngle,
+    required this.models,
+    // required this.selectKit,
   });
 
   @override
   Widget build(BuildContext context) {
-    List<Positioned> listOfImages = List.generate(images.length, (i) {
+    List<Positioned> listOfImages = List.generate(models.length, (i) {
       return Positioned(
-        left: imagesPosition[i]['x'],
-        top: imagesPosition[i]['y'],
+        left: models[i].positions!['x'],
+        top: models[i].positions!['y'],
         child: Transform.rotate(
-          angle: (imagesAngle[i]['a']! / 180.0) * pi,
-          child: ImagesContainer(
-            dimensions: imagesDimension[i],
-            position: imagesPosition[i],
-            content: images[i],
+          angle: ((models[i].angle!['a'] ?? 0.0) / 180.0) * pi,
+          child: ImageContainer(
+            model: models[i],
           ),
         ),
       );
@@ -40,7 +35,14 @@ class KitCanvas extends StatelessWidget {
       aspectRatio: 1 / 1,
       child: Stack(children: [
         const Kits(),
-        ClipPath(clipper: Master(), child: Stack(children: listOfImages)),
+        for (int i = 0; i < listOfImages.length; i++)
+          ClipPath(
+            clipper: Master(model: models[i]),
+            child: Stack(children: [listOfImages[i]]),
+          ),
+        // ClipPath(
+        //     clipper: Master(models: models),
+        //     child: Stack(children: listOfImages)),
       ]),
     );
   }

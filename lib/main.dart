@@ -1,6 +1,4 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-
 import 'package:image_editor/editor/dls_kit_editor.dart';
 
 void main() {
@@ -33,10 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<Uint8List>? imgg;
-  Color color = Colors.black;
-  final GlobalKey globalKey = GlobalKey();
-  caps(val) {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(

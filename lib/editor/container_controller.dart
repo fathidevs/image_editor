@@ -1,22 +1,17 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:image_editor/editor/image_model.dart';
+import 'package:image_editor/editor/image_container.dart';
 
 class ContainerController extends StatelessWidget {
-  final List<Map<String, double?>> imagesDimension;
-  final List<Map<String, double?>> imagesPosition;
-  final List<Map<String, double?>> imagesAngle;
-  final List<File> images;
+  final List<ImageModel> models;
   final Function onPanUpdate;
   final Function onImagePicked;
   final int pickedImageIndex;
 
   const ContainerController({
     super.key,
-    required this.imagesDimension,
-    required this.imagesPosition,
-    required this.imagesAngle,
-    required this.images,
+    required this.models,
     required this.onPanUpdate(DragUpdateDetails details),
     required this.onImagePicked(int index),
     required this.pickedImageIndex,
@@ -24,31 +19,29 @@ class ContainerController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> listOfImages = List.generate(images.length, (i) {
+    List<Positioned> listOfImages = List.generate(models.length, (i) {
       return Positioned(
-        left: imagesPosition[i]['x']!,
-        top: imagesPosition[i]['y']!,
+        left: models[i].positions!['x']!,
+        top: models[i].positions!['y']!,
         child: GestureDetector(
           onTap: () {
             onImagePicked(i);
           },
           child: Transform.rotate(
-            angle: (imagesAngle[i]['a']! / 180) * pi,
+            angle: (models[i].angle!['a']! / 180) * pi,
             child: Container(
-              width: imagesDimension[i]['w'],
-              height: imagesDimension[i]['h'],
               decoration:
                   BoxDecoration(border: pickedBorder(i == pickedImageIndex)),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   Opacity(
-                    opacity: 0.05,
-                    child: Image.file(
-                      images[i],
+                    opacity: 0.03,
+                    child: ImageContainer(
+                      model: models[i],
                     ),
                   ),
-                  Positioned(child: btn("m", i, onPanUpdate)),
+                  btns(i, onPanUpdate),
                 ],
               ),
             ),
@@ -66,7 +59,7 @@ class ContainerController extends StatelessWidget {
     );
   }
 
-  Widget btn(String n, int i, Function function) {
+  Widget btns(int i, Function function) {
     return GestureDetector(
       onTap: () {
         onImagePicked(i);
@@ -105,15 +98,15 @@ class ContainerController extends StatelessWidget {
   BoxDecoration pickedBtnDecoration(bool picked) {
     return BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(100)),
-      // border: Border.all(color: picked ? Colors.transparent : Colors.green),
-      color: picked ? Colors.green : Colors.transparent,
+      color: picked ? Colors.green : Colors.green.withOpacity(.1),
     );
   }
 
   Icon pickedBtnIcon(bool picked) {
     return Icon(
       Icons.open_with_rounded,
-      color: picked ? Colors.white : Colors.transparent,
+      color: picked ? Colors.white : Colors.white
+        ..withOpacity(.1),
     );
   }
 }

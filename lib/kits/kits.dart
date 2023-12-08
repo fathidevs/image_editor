@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:image_editor/kits/pants.dart';
-// import 'dart:ui' as ui;
-
 import 'package:image_editor/kits/shirt.dart';
+
+/*
+
+  this class is used to paint the shapes using KisPainter class
+
+    *this file is step 3 in adding new kit: 
+    a. add new param in constructor matching the new param added in step 2
+    b. add the new param in KitPainter()
+    
+*/
 
 class Kits extends StatelessWidget {
   final Color shirtColor;
@@ -24,6 +32,14 @@ class Kits extends StatelessWidget {
     );
   }
 }
+
+/*
+  
+    *this file is step 2 in adding new kit: 
+    a. add new param in constructor
+    b. add drawAndPaint() with the new param + the added kit
+    
+*/
 
 class KitPainter extends CustomPainter {
   final Color shirtColor;

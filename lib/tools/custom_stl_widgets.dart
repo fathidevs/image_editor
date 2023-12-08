@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomStlWidgets {
-  slider({
+  Widget slider({
     double min = 0,
     required double max,
     required double value,
-    required int pickedImageIndex,
+    
     required Function onChanged,
     IconData? icon,
+    required bool active,
   }) {
     return Row(
       children: [
@@ -16,12 +17,18 @@ class CustomStlWidgets {
           max: max,
           value: value,
           label: "label: $value",
-          onChanged: (newValue) {
-            onChanged(newValue);
-          },
+          onChanged: active ? (newValue) => onChanged(newValue) : null,
         ),
         Icon(icon),
       ],
+    );
+  }
+
+  Widget checkBox(String title, bool value, Function onChanged) {
+    return CheckboxListTile(
+      title: Text(title),
+      value: value,
+      onChanged: (value) => onChanged(value),
     );
   }
 }

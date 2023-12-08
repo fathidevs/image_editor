@@ -40,6 +40,9 @@ dependencies:
   device_info_plus: ^8.2.2
   fluttertoast: ^8.2.2
   image_picker: ^0.8.7+1
+  http: ^0.13.6
+  flutter_svg: ^1.1.6
+  xml: ^6.3.0
 
 dev_dependencies:
   flutter_test:

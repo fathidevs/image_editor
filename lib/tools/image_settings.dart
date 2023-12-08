@@ -37,8 +37,8 @@ class ImageSettings {
   }
 
   List<Map<String, double?>> centerImage(int index, double imageWidth,
-      double imageHeight, double canvasWidth, int shape) {
-    switch (shape) {
+      double imageHeight, double canvasWidth, List<int> shape) {
+    switch (shape[index]) {
       case 0: // square
 
         imagesPosition[index].update('x', (value) => (imageWidth / 2),
@@ -70,8 +70,9 @@ class ImageSettings {
     }
   }
 
-  scaleImage(int index, int shape, double canvasWidth) {
-    switch (shape) {
+  List<Map<String, double?>> scaleImage(
+      int index, List<int> shape, double canvasWidth) {
+    switch (shape[index]) {
       case 0: // square
         imagesDimension[index]
             .update("w", (value) => null, ifAbsent: () => null);
@@ -90,6 +91,12 @@ class ImageSettings {
             .update("w", (value) => canvasWidth, ifAbsent: () => canvasWidth);
         imagesDimension[index]
             .update("h", (value) => null, ifAbsent: () => null);
+        return imagesDimension;
+      default:
+        imagesDimension[index]
+            .update("w", (value) => null, ifAbsent: () => null);
+        imagesDimension[index]
+            .update("h", (value) => canvasWidth, ifAbsent: () => canvasWidth);
         return imagesDimension;
     }
   }
