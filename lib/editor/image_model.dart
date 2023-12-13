@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 
 class ImageModel {
   Map<String, double?>? dimensions;
@@ -11,6 +12,7 @@ class ImageModel {
   int? getShape;
   bool isNetwork;
   Map<String, bool>? clippedTo;
+  Color? color;
 
   ImageModel({
     this.dimensions,
@@ -23,6 +25,7 @@ class ImageModel {
     this.canvasWidth,
     this.isNetwork = false,
     this.clippedTo,
+    this.color,
   });
 
   Map<String, double> findSize() {

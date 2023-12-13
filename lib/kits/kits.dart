@@ -13,12 +13,12 @@ import 'package:image_editor/kits/shirt.dart';
 */
 
 class Kits extends StatelessWidget {
-  final Color shirtColor;
-  final Color pantsColor;
+  
+  final Map<String, Color> colors;
   const Kits({
     super.key,
-    this.shirtColor = Colors.black,
-    this.pantsColor = Colors.blue,
+  
+    required this.colors,
   });
 
   @override
@@ -26,8 +26,8 @@ class Kits extends StatelessWidget {
     return CustomPaint(
       size: MediaQuery.sizeOf(context),
       painter: KitPainter(
-        shirtColor: shirtColor,
-        pantsColor: pantsColor,
+        shirtColor: colors['shirt']!,
+        pantsColor: colors['pants']!,
       ),
     );
   }

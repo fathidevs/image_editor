@@ -1,13 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/editor/image_container.dart';
+import 'package:image_editor/editor/text_container.dart';
 
 class ContainerController extends StatelessWidget {
-  final List<ImageModel> models;
+  final List<dynamic> models;
   final Function onPanUpdate;
   final Function onImagePicked;
   final int pickedImageIndex;
+  final bool isImg;
 
   const ContainerController({
     super.key,
@@ -15,6 +16,7 @@ class ContainerController extends StatelessWidget {
     required this.onPanUpdate(DragUpdateDetails details),
     required this.onImagePicked(int index),
     required this.pickedImageIndex,
+    this.isImg = true,
   });
 
   @override
@@ -37,9 +39,11 @@ class ContainerController extends StatelessWidget {
                 children: [
                   Opacity(
                     opacity: 0.03,
-                    child: ImageContainer(
-                      model: models[i],
-                    ),
+                    child: isImg
+                        ? ImageContainer(
+                            model: models[i],
+                          )
+                        : TextContainer(model: models[i]),
                   ),
                   btns(i, onPanUpdate),
                 ],

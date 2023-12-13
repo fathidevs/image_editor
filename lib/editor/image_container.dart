@@ -22,6 +22,7 @@ class ImageContainer extends StatelessWidget {
           model.content,
           width: model.dimensions!['w'],
           height: model.dimensions!['h'],
+          color: model.color,
         );
       }
       return Image.network(
