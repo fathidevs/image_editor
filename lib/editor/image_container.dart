@@ -16,6 +16,7 @@ class ImageContainer extends StatelessWidget {
   }
 
   Widget getImage() {
+    
     if (model.isNetwork) {
       if (model.type == 'svg') {
         return SvgPicture.network(
@@ -39,9 +40,12 @@ class ImageContainer extends StatelessWidget {
         );
       }
       return Image.file(
+        
         model.content,
         width: model.dimensions!['w'],
         height: model.dimensions!['h'],
+        // colorBlendMode: BlendMode.srcATop,
+        // color: Colors.green,
       );
     }
   }

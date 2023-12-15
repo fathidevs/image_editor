@@ -6,6 +6,8 @@ import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/editor/text_model.dart';
 import 'package:image_editor/kits/master.dart';
 import 'package:image_editor/tools/custom_stl_widgets.dart';
+import 'package:image_editor/tools/image_from_link.dart';
+import 'package:image_editor/tools/image_from_storage.dart';
 import 'package:image_editor/tools/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart' as xml;
@@ -114,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // svg landscape: https://upload.wikimedia.org/wikipedia/commons/2/28/Supreme_Logo.svg
 
             imageFromLink(
-                "https://upload.wikimedia.org/wikipedia/commons/2/28/Supreme_Logo.svg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
                 canvasWidth);
           },
           child: const Text(
@@ -283,22 +285,24 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   pickImage() async {
-    PickImg pickImg = PickImg();
+    // PickImg pickImg = PickImg();
+    ImageFromStorage pickImg = ImageFromStorage();
     setState(() {
       // imagePickerIsNotActive = false;
     });
-    File? file = await pickImg.fromGallery();
-    if (file != null) {
-      Size sizee = await pickImg.imageDimension(file);
+    Map<String, dynamic>? pickedFile = await pickImg.pick();
+
+    if (pickedFile != null) {
+      Size sizee = pickedFile['size'];
 
       setState(() {
         double w = MediaQuery.of(context).size.width * .5;
 
         ImageModel imageModel = ImageModel();
-        imageModel.content = file;
+        imageModel.content = pickedFile['content'];
         imageModel.size = sizee;
         imageModel.canvasWidth = w;
-        imageModel.type = imageModel.getType(file.path);
+        imageModel.type = pickedFile['exe'];
         imageModel.dimensions = imageModel.scaleImage();
         imageModel.positions = imageModel.centerImage();
         imageModel.angle = {'a': 0.0};
@@ -350,24 +354,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   imageFromLink(String link, double w) async {
-    bool isSvg = ImageModel().isSvg(link);
-
-    Size sizee =
-        isSvg ? await svgPictureSize(link) : await imageFromLinkSize(link);
-
+    ImageModel imageModel = await ImageFromLink.imageFromLink(link, w);
     setState(() {
-      ImageModel imageModel = ImageModel();
-      imageModel.isNetwork = true;
-      imageModel.content = link;
-      imageModel.size = sizee;
-      imageModel.canvasWidth = w * .5;
-      imageModel.type = imageModel.getType(link);
-      imageModel.dimensions = imageModel.scaleImage();
-      imageModel.positions = imageModel.centerImage();
-      imageModel.angle = {'a': 0.0};
-      imageModel.getShape = imageModel.shape();
-      imageModel.clippedTo = Master.allClips();
-
       imageModels.add(imageModel);
       pickedImageIndex = imageModels.length - 1;
     });
@@ -392,7 +380,7 @@ class _MyHomePageState extends State<MyHomePage> {
         dy -= (imageModels[pickedImageIndex].dimensions!['h']! * .75);
       } else {
         // width is NOT null
-    
+
         dx -= (imageModels[pickedImageIndex].dimensions!['w']! * .5);
         dy -= (imageModels[pickedImageIndex].dimensions!['w']! * .75);
       }
