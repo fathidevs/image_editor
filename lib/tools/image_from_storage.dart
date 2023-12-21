@@ -2,31 +2,35 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_svg/parser.dart';
+import 'package:image_editor/editor/image_model.dart';
+import 'package:image_editor/kits/master.dart';
 
 class ImageFromStorage {
-  pick() async {
+  // final ImageModel imageModel;
+  // ImageFromStorage({required});
+  _pickedFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
     );
 
     if (result == null) return;
 
-    return await info(result);
+    return await _info(result);
   }
 
-  Future<Map<String, dynamic>> info(FilePickerResult result) async {
+  Future<Map<String, dynamic>> _info(FilePickerResult result) async {
     String path = result.files.single.path!;
     String exe = result.files.single.extension!;
     return {
       'content': File(result.files.single.path!),
       'size': exe == 'svg'
-          ? await svgDimensions(File(path))
-          : await imgDimensions(File(path)),
+          ? await _svgDimensions(File(path))
+          : await _imgDimensions(File(path)),
       'exe': result.files.single.extension,
     };
   }
 
-  Future<Size> imgDimensions(File file) async {
+  Future<Size> _imgDimensions(File file) async {
     final bytes = file.readAsBytes();
     final codec = await instantiateImageCodec(await bytes);
     final frameInfo = await codec.getNextFrame();
@@ -36,7 +40,7 @@ class ImageFromStorage {
     return Size(width, height);
   }
 
-  Future<Size> svgDimensions(File file) async {
+  Future<Size> _svgDimensions(File file) async {
     final svgString = await file.readAsString();
     final svgParser = SvgParser();
     // final svg = SvgPicture.string(svgString);
@@ -44,5 +48,24 @@ class ImageFromStorage {
     final width = svgRoot.viewport.width;
     final height = svgRoot.viewport.height;
     return Size(width, height);
+  }
+
+  pick(ImageModel imageModel, double canvasWidth) async {
+    Map<String, dynamic>? pickedFile = await _pickedFile();
+    if (pickedFile == null) return;
+
+    Size sizee = pickedFile['size'];
+
+    imageModel.content = pickedFile['content'];
+    imageModel.size = sizee;
+    imageModel.canvasWidth = canvasWidth / 2;
+    imageModel.type = pickedFile['exe'];
+    imageModel.dimensions = imageModel.scaleImage();
+    imageModel.positions = imageModel.centerImage();
+    imageModel.angle = {'a': 0.0};
+    imageModel.getShape = imageModel.shape();
+    imageModel.clippedTo = Master.allClips();
+
+    return imageModel;
   }
 }

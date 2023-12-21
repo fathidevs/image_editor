@@ -1,16 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_editor/editor/dls_kit_editor.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/editor/text_model.dart';
-import 'package:image_editor/kits/master.dart';
 import 'package:image_editor/tools/custom_stl_widgets.dart';
 import 'package:image_editor/tools/image_from_link.dart';
 import 'package:image_editor/tools/image_from_storage.dart';
-import 'package:image_editor/tools/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'package:xml/xml.dart' as xml;
+import 'package:image_editor/tools/image_state.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<TextModel> textModels = [];
   int pickedImageIndex = -1;
   int pickedTextIndex = -1;
+  bool imagePickerIsNotActive = true;
   Map<String, Color> kitColors = {
     'shirt': Colors.grey,
     'pants': Colors.red,
@@ -55,6 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     double canvasWidth = MediaQuery.of(context).size.width;
     final maxPosition = canvasWidth * .95;
+    ImageState imageState = ImageState(
+      imageModel: imageModels.isNotEmpty ? imageModels[pickedImageIndex] : null,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -71,7 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 kitColors: kitColors,
                 pickedImageIndex: pickedImageIndex,
                 onPanUpdateImageController: (DragUpdateDetails details) =>
-                    onPanUpdateImageController(details, maxPosition),
+                    onPanUpdateImageController(
+                        imageState, details, maxPosition),
                 onImagePicked: (index) {
                   setState(() {
                     pickedImageIndex = index;
@@ -82,8 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Flexible(child: addKitBtns(canvasWidth, context)),
                   Flexible(
-                      flex: 2,
-                      child: imageControllerWidgets(maxPosition, canvasWidth)),
+                    flex: 2,
+                    child: imageControllerWidgets(
+                        imageState, maxPosition, canvasWidth),
+                  ),
                 ],
               ),
               pickers(),
@@ -99,8 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         ElevatedButton(
           onPressed: () {
-            // if (imagePickerIsNotActive) pickImage();
-            pickImage();
+            if (imagePickerIsNotActive) imageFromStorage(canvasWidth);
           },
           child: const Text(
             "image from storage",
@@ -155,7 +156,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget imageControllerWidgets(double maxPosition, double canvasWidth) {
+  Widget imageControllerWidgets(
+      ImageState imageState, double maxPosition, double canvasWidth) {
+    double? imgWidth = pickedImageIndex >= 0
+        ? imageModels[pickedImageIndex].dimensions!['w']
+        : null;
+    double? imgHeight = pickedImageIndex >= 0
+        ? imageModels[pickedImageIndex].dimensions!['h']
+        : null;
     return Column(
       children: [
         CustomStlWidgets().slider(
@@ -167,9 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 : 0.0,
             onChanged: (value) {
               setState(() {
-                imageModels[pickedImageIndex]
-                    .positions!
-                    .update('x', (val) => value);
+                imageState.moveX(value);
               });
             }),
         CustomStlWidgets().slider(
@@ -181,9 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 : 0.0,
             onChanged: (value) {
               setState(() {
-                imageModels[pickedImageIndex]
-                    .positions!
-                    .update('y', (val) => value);
+                imageState.moveY(value);
               });
             }),
         CustomStlWidgets().slider(
@@ -191,16 +195,15 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icons.open_in_full_rounded,
             min: 50.0,
             max: canvasWidth,
-            value: imageModels.isNotEmpty
-                ? (imageModels[pickedImageIndex].dimensions!['w'] ??
-                            imageModels[pickedImageIndex].dimensions!['h'])! <=
-                        50.0
+            value: imageModels.isEmpty
+                ? 50
+                : (imgWidth ?? imgHeight)! <= 50.0
                     ? 50.0
-                    : (imageModels[pickedImageIndex].dimensions!['w'] ??
-                        imageModels[pickedImageIndex].dimensions!['h'])!
-                : 50.0,
+                    : (imgWidth ?? imgHeight)!,
             onChanged: (v) {
-              scale(v);
+              setState(() {
+                imageState.scale(v);
+              });
             }),
         CustomStlWidgets().slider(
             active: imageModels.isNotEmpty,
@@ -260,97 +263,26 @@ class _MyHomePageState extends State<MyHomePage> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void scale(double newValue) {
+  imageFromStorage(double canvasWidth) async {
     setState(() {
-      switch (imageModels[pickedImageIndex].getShape) {
-        case 0: //square
-          imageModels[pickedImageIndex]
-              .dimensions!
-              .update('w', (value) => newValue);
-          imageModels[pickedImageIndex]
-              .dimensions!
-              .update('h', (value) => newValue);
-          break;
-        case 1: //portrait
-
-          imageModels[pickedImageIndex]
-              .dimensions!
-              .update('h', (value) => newValue);
-        case 2: // landscape
-          imageModels[pickedImageIndex]
-              .dimensions!
-              .update('w', (value) => newValue);
-      }
+      imagePickerIsNotActive = false;
     });
-  }
+    ImageFromStorage imageFromStorage = ImageFromStorage();
 
-  pickImage() async {
-    // PickImg pickImg = PickImg();
-    ImageFromStorage pickImg = ImageFromStorage();
-    setState(() {
-      // imagePickerIsNotActive = false;
-    });
-    Map<String, dynamic>? pickedFile = await pickImg.pick();
+    ImageModel imageModel = ImageModel();
+    final pick = await imageFromStorage.pick(imageModel, canvasWidth);
 
-    if (pickedFile != null) {
-      Size sizee = pickedFile['size'];
-
+    if (pick != null) {
       setState(() {
-        double w = MediaQuery.of(context).size.width * .5;
+        imageModels.add(pick);
 
-        ImageModel imageModel = ImageModel();
-        imageModel.content = pickedFile['content'];
-        imageModel.size = sizee;
-        imageModel.canvasWidth = w;
-        imageModel.type = pickedFile['exe'];
-        imageModel.dimensions = imageModel.scaleImage();
-        imageModel.positions = imageModel.centerImage();
-        imageModel.angle = {'a': 0.0};
-        imageModel.getShape = imageModel.shape();
-        imageModel.clippedTo = Master.allClips();
-
-        imageModels.add(imageModel);
         pickedImageIndex = imageModels.length - 1;
       });
     }
-    // setState(() {
-    //   imagePickerIsNotActive = true;
-    // });
-  }
 
-  Future<Size> imageFromLinkSize(link) async {
-    try {
-      NetworkAssetBundle netWorkAssetBundle =
-          NetworkAssetBundle(Uri.parse(link));
-      final ByteData data = await netWorkAssetBundle.load(link);
-      final Uint8List bytes = data.buffer.asUint8List();
-
-      final decodedImage = await decodeImageFromList(bytes);
-
-      return Size(
-          decodedImage.width.toDouble(), decodedImage.height.toDouble());
-    } on SocketException catch (e) {
-      snackBar("Error: ${e.message}");
-      return const Size(-1, -1);
-    }
-  }
-
-  svgPictureSize(String link) async {
-    Size size = Size.zero;
-
-    final response = await http.get(Uri.parse(link));
-    final svgContent = response.body;
-    if (response.statusCode == 200) {
-      final document = xml.XmlDocument.parse(svgContent);
-      final svgElement = document.rootElement;
-      final width = svgElement.getAttribute('width').toString();
-      final height = svgElement.getAttribute('height').toString();
-      size = Size(double.parse(width), double.parse(height));
-    } else {
-      snackBar("Error: ${response.statusCode}");
-    }
-
-    return size;
+    setState(() {
+      imagePickerIsNotActive = true;
+    });
   }
 
   imageFromLink(String link, double w) async {
@@ -361,50 +293,22 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  onPanUpdateImageController(DragUpdateDetails details, double maxPosition) {
+  onPanUpdateImageController(
+      ImageState imageState, DragUpdateDetails details, double maxPosition) {
     double dx = details.globalPosition.dx;
     double dy = details.globalPosition.dy;
-
-    imagePositionUpdater(dx, dy, maxPosition);
-  }
-
-  void imagePositionUpdater(double dx, double dy, double maxPosition) {
     setState(() {
-      if (imageModels[pickedImageIndex].getShape == 0) {
-        // width is null
-        dx -= (imageModels[pickedImageIndex].dimensions!['h']! * .5);
-        dy -= (imageModels[pickedImageIndex].dimensions!['h']! * .75);
-      } else if (imageModels[pickedImageIndex].getShape == 1) {
-        // width is null
-        dx -= (imageModels[pickedImageIndex].dimensions!['h']! * .5);
-        dy -= (imageModels[pickedImageIndex].dimensions!['h']! * .75);
-      } else {
-        // width is NOT null
-
-        dx -= (imageModels[pickedImageIndex].dimensions!['w']! * .5);
-        dy -= (imageModels[pickedImageIndex].dimensions!['w']! * .75);
-      }
-      imageModels[pickedImageIndex].positions!.update(
-          'x',
-          (value) => dx > 0.0
-              ? dx <= maxPosition
-                  ? dx
-                  : maxPosition
-              : 0.0);
-      imageModels[pickedImageIndex].positions!.update(
-          'y',
-          (value) => dy > 0.0
-              ? dy <= maxPosition
-                  ? dy
-                  : maxPosition
-              : 0.0);
+      imageModels[pickedImageIndex].positions =
+          imageState.drag(dx, dy, maxPosition);
     });
   }
 
   changeImageColor() {
-    setState(() {
-      imageModels[pickedImageIndex].color = Colors.amber;
-    });
+    if (imageModels.isNotEmpty) {
+      setState(() {
+        imageModels[pickedImageIndex].color = Colors.amber;
+      });
+    }
   }
 
   changeKitColor(String key) {

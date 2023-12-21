@@ -24,11 +24,7 @@ class ImageFromLink {
     imageModel.getShape = imageModel.shape();
     imageModel.clippedTo = Master.allClips();
     return imageModel;
-    // setState(() {
-
-    //   imageModels.add(imageModel);
-    //   pickedImageIndex = imageModels.length - 1;
-    // });
+    
   }
 
   static Future<Size> _imgSize(link) async {
@@ -43,7 +39,6 @@ class ImageFromLink {
       return Size(
           decodedImage.width.toDouble(), decodedImage.height.toDouble());
     } on SocketException catch (e) {
-      // snackBar("Error: ${e.message}");
       return const Size(-1, -1);
     }
   }
@@ -59,9 +54,7 @@ class ImageFromLink {
       final width = svgElement.getAttribute('width').toString();
       final height = svgElement.getAttribute('height').toString();
       size = Size(double.parse(width), double.parse(height));
-    } else {
-      // snackBar("Error: ${response.statusCode}");
-    }
+    } else {}
 
     return size;
   }

@@ -70,10 +70,14 @@ class ImageModel {
 
   Map<String, double?> centerImage() {
     Map<String, double> sizeFinder = findSize();
+
     switch (shape()) {
       case 0: // square
 
-        return {'x': canvasWidth! / 2, 'y': canvasWidth! / 2};
+        return {
+          'x': canvasWidth! / 2,
+          'y': (canvasWidth! / 2) 
+        };
 
       case 1: // portrait
 
@@ -86,7 +90,7 @@ class ImageModel {
 
         return {
           'x': canvasWidth! / 2,
-          'y': canvasWidth! / 2 + sizeFinder['nh']! / 2
+          'y': (canvasWidth! / 2) + (sizeFinder['nh']! /2)
         };
 
       default:
