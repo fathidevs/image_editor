@@ -148,9 +148,9 @@ class RPSCustomPainter extends CustomPainter {
     path_0.lineTo(size.width * 0.7182617, size.height * 0.09886719);
     path_0.close();
 
-    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
-    paint_0_fill.color = Color(0xff000000).withOpacity(1.0);
-    canvas.drawPath(path_0, paint_0_fill);
+    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    paint0Fill.color = const Color(0xff000000).withOpacity(1.0);
+    canvas.drawPath(path_0, paint0Fill);
 
     Path path_1 = Path();
     path_1.moveTo(size.width * 0.9750391, size.height * 0.1442578);
@@ -286,9 +286,9 @@ class RPSCustomPainter extends CustomPainter {
         size.height * 0.1442578);
     path_1.close();
 
-    Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
-    paint_1_fill.color = Color(0xff000000).withOpacity(1.0);
-    canvas.drawPath(path_1, paint_1_fill);
+    Paint paint1Fill = Paint()..style = PaintingStyle.fill;
+    paint1Fill.color = const Color(0xff000000).withOpacity(1.0);
+    canvas.drawPath(path_1, paint1Fill);
   }
 
   @override

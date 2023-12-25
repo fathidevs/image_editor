@@ -38,7 +38,7 @@ class ImageFromLink {
 
       return Size(
           decodedImage.width.toDouble(), decodedImage.height.toDouble());
-    } on SocketException catch (e) {
+    } on SocketException {
       return const Size(-1, -1);
     }
   }
