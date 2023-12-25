@@ -7,6 +7,8 @@ import 'package:image_editor/tools/image_from_link.dart';
 import 'package:image_editor/tools/image_from_storage.dart';
 import 'package:image_editor/tools/image_state.dart';
 
+import 'dlsk_consts.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -43,8 +45,15 @@ class _MyHomePageState extends State<MyHomePage> {
   int pickedTextIndex = -1;
   bool imagePickerIsNotActive = true;
   Map<String, Color> kitColors = {
-    'shirt': Colors.grey,
-    'pants': Colors.red,
+    Kc.kfs: Colors.grey,
+    Kc.krs: Colors.red,
+    Kc.kls: Colors.green,
+    Kc.klsh: Colors.blue,
+    Kc.krsh: Colors.amber,
+    Kc.krss: Colors.orange,
+    Kc.klss: Colors.brown,
+    Kc.krus: Colors.teal,
+    Kc.klus: Colors.blueGrey,
   };
 
   @override
@@ -227,30 +236,16 @@ class _MyHomePageState extends State<MyHomePage> {
     return Column(
       children: [
         CustomStlWidgets().checkBox(
-            'shirt',
+            'full_shirt',
             imageModels.isNotEmpty
-                ? imageModels[pickedImageIndex].clippedTo!['shirt']!
+                ? imageModels[pickedImageIndex].clippedTo!['full_shirt']!
                 : false, (v) {
           if (imageModels.isNotEmpty) {
             setState(() {
               imageModels
                   .elementAt(pickedImageIndex)
                   .clippedTo!
-                  .update("shirt", (value) => !value);
-            });
-          }
-        }),
-        CustomStlWidgets().checkBox(
-            'pants',
-            imageModels.isNotEmpty
-                ? imageModels[pickedImageIndex].clippedTo!['pants']!
-                : false, (v) {
-          if (imageModels.isNotEmpty) {
-            setState(() {
-              imageModels
-                  .elementAt(pickedImageIndex)
-                  .clippedTo!
-                  .update("pants", (value) => !value);
+                  .update("full_shirt", (value) => !value);
             });
           }
         }),

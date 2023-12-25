@@ -5,7 +5,10 @@ import 'package:image_editor/editor/image_container.dart';
 import 'package:image_editor/editor/text_container.dart';
 import 'package:image_editor/editor/text_model.dart';
 import 'package:image_editor/kits/kits.dart';
+import 'package:image_editor/kits/logos_placement.dart';
+import 'package:image_editor/kits/logos_placements.dart';
 import 'package:image_editor/kits/master.dart';
+import 'package:image_editor/tools/debug_kit_part.dart';
 
 class KitCanvas extends StatelessWidget {
   final List<ImageModel> imageModels;
@@ -55,6 +58,23 @@ class KitCanvas extends StatelessWidget {
             // clipper: Master(model: imageModels[i]),
             child: Stack(children: [listOfText[j]]),
           ),
+        LogosPlacement(),
+        Opacity(
+          opacity: .0,
+          child: CustomPaint(
+            size: Size(MediaQuery.sizeOf(context).width,
+                MediaQuery.sizeOf(context).width),
+            painter: LogoPlacements(),
+          ),
+        ),
+        // Opacity(
+        //   opacity: 1.0,
+        //   child: CustomPaint(
+        //     size: Size(MediaQuery.sizeOf(context).width,
+        //         MediaQuery.sizeOf(context).width),
+        //     painter: RPSCustomPainter(),
+        //   ),
+        // ),
       ]),
     );
   }

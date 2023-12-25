@@ -8,7 +8,7 @@ class DlsKitEditor extends StatelessWidget {
   final List<ImageModel> imageModels;
   final Map<String, Color> kitColors;
   final List<TextModel> textModels;
-  
+
   final Function onPanUpdateImageController;
   final Function onImagePicked;
   final int pickedImageIndex;
@@ -30,7 +30,7 @@ class DlsKitEditor extends StatelessWidget {
         Stack(
           children: [
             KitCanvas(
-              imageModels:imageModels,
+              imageModels: imageModels,
               kitColors: kitColors,
               textModels: textModels,
             ),
