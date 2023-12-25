@@ -1,40 +1,38 @@
-import 'dart:math';
-
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
-class LogosPlacement extends StatelessWidget {
-  const LogosPlacement({super.key});
+class PromoImage extends StatelessWidget {
+  final ui.Image? image;
+  const PromoImage({
+    super.key,
+    required this.image,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final double w = MediaQuery.sizeOf(context).width;
     return AspectRatio(
       aspectRatio: 1 / 1,
-      // color: Colors.amber.withOpacity(.1),
-      // width: w,
-      // height: w,
-      child: Stack(
-        children: [
-          Positioned(
-              left: w * .703,
-              top: w * .333,
-              child: Transform.rotate(
-                angle: (-90 / 180) * pi,
-                child: Container(
-                  width: w * .152,
-                  height: w * .07,
-                  color: Colors.red.withOpacity(0.3),
-                  child: Opacity(
-                    opacity: 0.5,
-                    child: Image.asset(
-                      'assets/ad.png',
-                      // fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ))
-        ],
+      child: CustomPaint(
+        painter: PromoPainter(image: image),
+        size: MediaQuery.sizeOf(context),
       ),
     );
   }
+}
+
+class PromoPainter extends CustomPainter {
+  final ui.Image? image;
+  PromoPainter({
+    required this.image,
+  });
+  @override
+  void paint(ui.Canvas canvas, ui.Size size) {
+    if (image != null) {
+      canvas.drawImage(image!,
+          Offset(size.width * 0.7439453, size.height * 0.2916016), Paint());
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

@@ -1,13 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_svg/parser.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/kits/master.dart';
+import 'package:flutter/material.dart';
 
 class ImageFromStorage {
-  // final ImageModel imageModel;
-  // ImageFromStorage({required});
   _pickedFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
@@ -67,5 +67,22 @@ class ImageFromStorage {
     imageModel.clippedTo = Master.allClips();
 
     return imageModel;
+  }
+
+  Future pickPromo(double width) async {
+    Map<String, dynamic>? pickedFile = await _pickedFile();
+    if (pickedFile == null) return;
+    final bytes = pickedFile['content'].readAsBytes();
+    final codec0 = await instantiateImageCodec(await bytes);
+    int w = (await codec0.getNextFrame()).image.width;
+    int h = (await codec0.getNextFrame()).image.height;
+    final codec = await instantiateImageCodec(
+      await bytes,
+      targetWidth: w < h ? (width * 0.07207031).toInt() : null,
+      targetHeight: w > h ? (width * 0.1550781).toInt() : null,
+    );
+
+    final frameInfo = await codec.getNextFrame();
+    return frameInfo.image;
   }
 }

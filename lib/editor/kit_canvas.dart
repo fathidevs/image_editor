@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_editor/editor/image_model.dart';
@@ -13,12 +14,14 @@ class KitCanvas extends StatelessWidget {
   final List<ImageModel> imageModels;
   final Map<String, Color> kitColors;
   final List<TextModel> textModels;
+  final ui.Image? promoImage;
 
   const KitCanvas({
     super.key,
     required this.imageModels,
     required this.kitColors,
     required this.textModels,
+    required this.promoImage,
   });
 
   @override
@@ -49,17 +52,22 @@ class KitCanvas extends StatelessWidget {
         Kits(colors: kitColors),
         for (int i = 0; i < listOfImages.length; i++)
           ClipPath(
+            // IMAGES
             clipper: Master(model: imageModels[i]),
             child: Stack(children: [listOfImages[i]]),
           ),
         for (int j = 0; j < listOfText.length; j++)
           ClipPath(
+            // TEXT
             // clipper: Master(model: imageModels[i]),
             child: Stack(children: [listOfText[j]]),
           ),
-        const LogosPlacement(),
+        PromoImage(
+          image: promoImage,
+        ),
         Opacity(
-          opacity: .0,
+          // DELETE ME
+          opacity: .2,
           child: CustomPaint(
             size: Size(MediaQuery.sizeOf(context).width,
                 MediaQuery.sizeOf(context).width),

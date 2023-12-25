@@ -20,10 +20,13 @@ class Kits extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: MediaQuery.sizeOf(context),
-      painter: KitPainter(
-        color: colors,
+    return AspectRatio(
+      aspectRatio: 1 / 1,
+      child: CustomPaint(
+        size: MediaQuery.sizeOf(context),
+        painter: KitPainter(
+          color: colors,
+        ),
       ),
     );
   }

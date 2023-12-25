@@ -10,34 +10,35 @@ import 'package:flutter/material.dart';
 class LogoPlacements extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    // left sock logo
     Paint paint0Fill = Paint()..style = PaintingStyle.fill;
-    paint0Fill.color = const Color(0xffFFFFFF).withOpacity(1.0);
+    paint0Fill.color = Colors.red;
     canvas.drawRect(
         Rect.fromLTWH(size.width * 0.5767578, size.height * 0.1560547,
             size.width * 0.03437500, size.height * 0.04140625),
         paint0Fill);
-
+// shirt logo
     Paint paint1Fill = Paint()..style = PaintingStyle.fill;
-    paint1Fill.color = const Color(0xffFFFFFF).withOpacity(1.0);
+    paint1Fill.color = Colors.pink;
     canvas.drawRect(
         Rect.fromLTWH(size.width * 0.6871094, size.height * 0.4058594,
             size.width * 0.02792969, size.height * 0.03359375),
         paint1Fill);
-
+// short right
     Paint paint2Fill = Paint()..style = PaintingStyle.fill;
-    paint2Fill.color = const Color(0xffFFFFFF).withOpacity(1.0);
+    paint2Fill.color = Colors.orange;
     canvas.drawRect(
         Rect.fromLTWH(size.width * 0.7318359, size.height * 0.8837891,
             size.width * 0.04218750, size.height * 0.03496094),
         paint2Fill);
-
+// promo
     Paint paint3Fill = Paint()..style = PaintingStyle.fill;
-    paint3Fill.color = const Color(0xffFFFFFF).withOpacity(1.0);
+    paint3Fill.color = Colors.green;
     canvas.drawRect(
         Rect.fromLTWH(size.width * 0.7439453, size.height * 0.2916016,
             size.width * 0.07207031, size.height * 0.1550781),
         paint3Fill);
-
+// sock right
     Paint paint4Fill = Paint()..style = PaintingStyle.fill;
     paint4Fill.color = const Color(0xffFFFFFF).withOpacity(1.0);
     canvas.drawRect(

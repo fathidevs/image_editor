@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:image_editor/dlsk_consts.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/kits/parts/left_short.dart';
+import 'package:image_editor/kits/parts/right_short.dart';
 import 'package:image_editor/kits/parts/right_short_sleeve.dart';
 import 'package:image_editor/kits/parts/right_sock.dart';
 
 import 'full_shirt.dart';
 import 'parts/left_short_sleeve.dart';
+import 'parts/left_sock.dart';
 import 'parts/left_under_sleeve.dart';
 import 'parts/right_under_sleeve.dart';
 
@@ -40,11 +42,14 @@ class Master extends CustomClipper<Path> {
     if (model.clippedTo![Kc.krs]!) {
       p.addPath(RightSock().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.klsh]!) {
-      p.addPath(LeftShort().getClip(size), Offset.zero);
+    if (model.clippedTo![Kc.kls]!) {
+      p.addPath(LeftSock().getClip(size), Offset.zero);
     }
     if (model.clippedTo![Kc.krsh]!) {
-      p.addPath(RightSock().getClip(size), Offset.zero);
+      p.addPath(RightShort().getClip(size), Offset.zero);
+    }
+    if (model.clippedTo![Kc.klsh]!) {
+      p.addPath(LeftShort().getClip(size), Offset.zero);
     }
     if (model.clippedTo![Kc.krss]!) {
       p.addPath(RightShortSleeve().getClip(size), Offset.zero);

@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:image_editor/editor/container_controller.dart';
 import 'package:image_editor/editor/image_model.dart';
@@ -12,6 +13,7 @@ class DlsKitEditor extends StatelessWidget {
   final Function onPanUpdateImageController;
   final Function onImagePicked;
   final int pickedImageIndex;
+  final ui.Image? promoImage;
 
   const DlsKitEditor({
     super.key,
@@ -21,6 +23,7 @@ class DlsKitEditor extends StatelessWidget {
     required this.onPanUpdateImageController,
     required this.onImagePicked,
     required this.pickedImageIndex,
+    required this.promoImage,
   });
 
   @override
@@ -31,6 +34,7 @@ class DlsKitEditor extends StatelessWidget {
           children: [
             KitCanvas(
               imageModels: imageModels,
+              promoImage: promoImage,
               kitColors: kitColors,
               textModels: textModels,
             ),

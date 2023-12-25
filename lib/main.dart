@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:image_editor/editor/dls_kit_editor.dart';
 import 'package:image_editor/editor/image_model.dart';
@@ -40,6 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ImageModel> imageModels = [];
+  ui.Image? promoImage;
   List<TextModel> textModels = [];
   int pickedImageIndex = -1;
   int pickedTextIndex = -1;
@@ -74,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               DlsKitEditor(
+                promoImage: promoImage,
                 imageModels: imageModels,
                 textModels: textModels,
                 kitColors: kitColors,
@@ -106,62 +109,76 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget addKitBtns(double canvasWidth, BuildContext cx) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            if (imagePickerIsNotActive) imageFromStorage(canvasWidth);
-          },
-          child: const Text(
-            "image from storage",
-            textAlign: TextAlign.center,
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            // square: https://science4fun.info/wp-content/uploads/2017/05/tree.jpg
-            // portrait: https://assets-global.website-files.com/623de0e9fe0f9c6ed17335ad/635ae55d007d1c25463d76e3_Swamp%20White%20Oak%20(1).jpeg
-            // landscape: https://www.adobe.com/content/dam/cc/us/en/creativecloud/illustration-adobe-illustration/how-to-draw-trees/draw-trees_fb-img_1200x800.jpg
-            // svg square: https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg
-            // svg landscape: https://upload.wikimedia.org/wikipedia/commons/2/28/Supreme_Logo.svg
+    return SizedBox(
+      height: 250,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                if (imagePickerIsNotActive) promoImageFromStorage(canvasWidth);
+              },
+              child: const Text(
+                "image from storage-promo",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (imagePickerIsNotActive) imageFromStorage(canvasWidth);
+              },
+              child: const Text(
+                "image from storage",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // square: https://science4fun.info/wp-content/uploads/2017/05/tree.jpg
+                // portrait: https://assets-global.website-files.com/623de0e9fe0f9c6ed17335ad/635ae55d007d1c25463d76e3_Swamp%20White%20Oak%20(1).jpeg
+                // landscape: https://www.adobe.com/content/dam/cc/us/en/creativecloud/illustration-adobe-illustration/how-to-draw-trees/draw-trees_fb-img_1200x800.jpg
+                // svg square: https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg
+                // svg landscape: https://upload.wikimedia.org/wikipedia/commons/2/28/Supreme_Logo.svg
 
-            imageFromLink(
-                "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-                canvasWidth);
-          },
-          child: const Text(
-            "image from link",
-            textAlign: TextAlign.center,
-          ),
+                imageFromLink(
+                    "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+                    canvasWidth);
+              },
+              child: const Text(
+                "image from link",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                changeImageColor();
+              },
+              child: const Text(
+                "image color",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                changeKitColor('pants');
+              },
+              child: const Text(
+                "kit color",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                addTextDialog(cx);
+              },
+              child: const Text(
+                "add text",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
         ),
-        ElevatedButton(
-          onPressed: () {
-            changeImageColor();
-          },
-          child: const Text(
-            "image color",
-            textAlign: TextAlign.center,
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            changeKitColor('pants');
-          },
-          child: const Text(
-            "kit color",
-            textAlign: TextAlign.center,
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            addTextDialog(cx);
-          },
-          child: const Text(
-            "add text",
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -256,6 +273,25 @@ class _MyHomePageState extends State<MyHomePage> {
   snackBar(String message) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  promoImageFromStorage(double canvasWidth) async {
+    setState(() {
+      imagePickerIsNotActive = false;
+    });
+    ImageFromStorage imageFromStorage = ImageFromStorage();
+
+    final pick = await imageFromStorage.pickPromo(canvasWidth);
+
+    if (pick != null) {
+      setState(() {
+        promoImage = pick;
+      });
+    }
+
+    setState(() {
+      imagePickerIsNotActive = true;
+    });
   }
 
   imageFromStorage(double canvasWidth) async {
