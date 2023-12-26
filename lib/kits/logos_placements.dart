@@ -10,13 +10,6 @@ import 'package:flutter/material.dart';
 class LogoPlacements extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // left sock logo
-    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
-    paint0Fill.color = Colors.red;
-    canvas.drawRect(
-        Rect.fromLTWH(size.width * 0.5767578, size.height * 0.1560547,
-            size.width * 0.03437500, size.height * 0.04140625),
-        paint0Fill);
 // shirt logo
     Paint paint1Fill = Paint()..style = PaintingStyle.fill;
     paint1Fill.color = Colors.pink;
@@ -24,7 +17,7 @@ class LogoPlacements extends CustomPainter {
         Rect.fromLTWH(size.width * 0.6871094, size.height * 0.4058594,
             size.width * 0.02792969, size.height * 0.03359375),
         paint1Fill);
-// short right
+// short right logo
     Paint paint2Fill = Paint()..style = PaintingStyle.fill;
     paint2Fill.color = Colors.orange;
     canvas.drawRect(
@@ -38,7 +31,14 @@ class LogoPlacements extends CustomPainter {
         Rect.fromLTWH(size.width * 0.7439453, size.height * 0.2916016,
             size.width * 0.07207031, size.height * 0.1550781),
         paint3Fill);
-// sock right
+    // right sock logo
+    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    paint0Fill.color = Colors.brown;
+    canvas.drawRect(
+        Rect.fromLTWH(size.width * 0.5767578, size.height * 0.1560547,
+            size.width * 0.03437500, size.height * 0.04140625),
+        paint0Fill);
+// sock left logo
     Paint paint4Fill = Paint()..style = PaintingStyle.fill;
     paint4Fill.color = const Color(0xffFFFFFF).withOpacity(1.0);
     canvas.drawRect(
@@ -49,7 +49,7 @@ class LogoPlacements extends CustomPainter {
     Paint paint5Stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.0009765625;
-    paint5Stroke.color = const Color(0xff000000).withOpacity(1.0);
+    paint5Stroke.color = Colors.brown;
     canvas.drawRect(
         Rect.fromLTWH(size.width * 0.7439453, size.height * 0.2916016,
             size.width * 0.07207031, size.height * 0.1550781),

@@ -26,7 +26,7 @@ class PromoPainter extends CustomPainter {
     required this.image,
   });
   @override
-  void paint(ui.Canvas canvas, ui.Size size) {
+  void paint(Canvas canvas, Size size) {
     if (image != null) {
       canvas.drawImage(image!,
           Offset(size.width * 0.7439453, size.height * 0.2916016), Paint());
@@ -34,5 +34,5 @@ class PromoPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -4,6 +4,7 @@ import 'package:image_editor/editor/container_controller.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/editor/kit_canvas.dart';
 import 'package:image_editor/editor/text_model.dart';
+import 'package:image_editor/kits/logo_images_widget.dart';
 
 class DlsKitEditor extends StatelessWidget {
   final List<ImageModel> imageModels;
@@ -15,6 +16,8 @@ class DlsKitEditor extends StatelessWidget {
   final int pickedImageIndex;
   final ui.Image? promoImage;
 
+  final Map<String, LogoImageModel> logoModels;
+
   const DlsKitEditor({
     super.key,
     required this.imageModels,
@@ -24,6 +27,7 @@ class DlsKitEditor extends StatelessWidget {
     required this.onImagePicked,
     required this.pickedImageIndex,
     required this.promoImage,
+    required this.logoModels,
   });
 
   @override
@@ -34,6 +38,7 @@ class DlsKitEditor extends StatelessWidget {
           children: [
             KitCanvas(
               imageModels: imageModels,
+              logoModels: logoModels,
               promoImage: promoImage,
               kitColors: kitColors,
               textModels: textModels,

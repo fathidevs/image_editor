@@ -6,12 +6,14 @@ import 'package:image_editor/editor/image_container.dart';
 import 'package:image_editor/editor/text_container.dart';
 import 'package:image_editor/editor/text_model.dart';
 import 'package:image_editor/kits/kits.dart';
-import 'package:image_editor/kits/logos_placement.dart';
+import 'package:image_editor/kits/logo_images_widget.dart';
+import 'package:image_editor/kits/promo_image.dart';
 import 'package:image_editor/kits/logos_placements.dart';
 import 'package:image_editor/kits/master.dart';
 
 class KitCanvas extends StatelessWidget {
   final List<ImageModel> imageModels;
+  final Map<String, LogoImageModel> logoModels;
   final Map<String, Color> kitColors;
   final List<TextModel> textModels;
   final ui.Image? promoImage;
@@ -19,6 +21,7 @@ class KitCanvas extends StatelessWidget {
   const KitCanvas({
     super.key,
     required this.imageModels,
+    required this.logoModels,
     required this.kitColors,
     required this.textModels,
     required this.promoImage,
@@ -65,16 +68,18 @@ class KitCanvas extends StatelessWidget {
         PromoImage(
           image: promoImage,
         ),
+
+        LogoImagesWidget(models: logoModels),
         Opacity(
           // DELETE ME
-          opacity: .2,
+          opacity: .0,
           child: CustomPaint(
             size: Size(MediaQuery.sizeOf(context).width,
                 MediaQuery.sizeOf(context).width),
             painter: LogoPlacements(),
           ),
         ),
-        // Opacity(
+        // Opacity( // DELETE ME
         //   opacity: 1.0,
         //   child: CustomPaint(
         //     size: Size(MediaQuery.sizeOf(context).width,

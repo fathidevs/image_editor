@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_editor/editor/dls_kit_editor.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/editor/text_model.dart';
+import 'package:image_editor/kits/logo_images_widget.dart';
 import 'package:image_editor/tools/custom_stl_widgets.dart';
 import 'package:image_editor/tools/image_from_link.dart';
 import 'package:image_editor/tools/image_from_storage.dart';
@@ -41,6 +42,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ImageModel> imageModels = [];
+  Map<String, LogoImageModel> logoModels = {};
   ui.Image? promoImage;
   List<TextModel> textModels = [];
   int pickedImageIndex = -1;
@@ -78,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
               DlsKitEditor(
                 promoImage: promoImage,
                 imageModels: imageModels,
+                logoModels: logoModels,
                 textModels: textModels,
                 kitColors: kitColors,
                 pickedImageIndex: pickedImageIndex,
@@ -114,6 +117,15 @@ class _MyHomePageState extends State<MyHomePage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            ElevatedButton(
+              onPressed: () {
+                if (imagePickerIsNotActive) logoImageFromStorage(canvasWidth);
+              },
+              child: const Text(
+                "image from storage-logo",
+                textAlign: TextAlign.center,
+              ),
+            ),
             ElevatedButton(
               onPressed: () {
                 if (imagePickerIsNotActive) promoImageFromStorage(canvasWidth);
@@ -286,6 +298,25 @@ class _MyHomePageState extends State<MyHomePage> {
     if (pick != null) {
       setState(() {
         promoImage = pick;
+      });
+    }
+
+    setState(() {
+      imagePickerIsNotActive = true;
+    });
+  }
+
+  logoImageFromStorage(double canvasWidth) async {
+    setState(() {
+      imagePickerIsNotActive = false;
+    });
+    ImageFromStorage imageFromStorage = ImageFromStorage();
+
+    final pick = await imageFromStorage.pickLogo(canvasWidth);
+
+    if (pick != null) {
+      setState(() {
+        logoModels = pick;
       });
     }
 
