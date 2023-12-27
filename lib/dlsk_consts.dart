@@ -16,4 +16,11 @@ class Kc {
   //
   static const String krls = 'right_long_sleeve';
   static const String klls = 'left_long_sleeve';
+  //
+  static const String ksnc = 'shirt_number_color';
+  static const String ksonc = 'short_number_color';
+  //
+  static const String kcr = 'circle';
+  //
+  static const String krg = 'rings';
 }

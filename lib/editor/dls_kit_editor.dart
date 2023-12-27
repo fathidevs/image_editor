@@ -1,10 +1,10 @@
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:image_editor/editor/container_controller.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/editor/kit_canvas.dart';
 import 'package:image_editor/editor/text_model.dart';
-import 'package:image_editor/kits/logo_images_widget.dart';
+import 'package:image_editor/kits/promo_image_model.dart';
+import '../kits/logo_image_model.dart';
 
 class DlsKitEditor extends StatelessWidget {
   final List<ImageModel> imageModels;
@@ -14,7 +14,7 @@ class DlsKitEditor extends StatelessWidget {
   final Function onPanUpdateImageController;
   final Function onImagePicked;
   final int pickedImageIndex;
-  final ui.Image? promoImage;
+  final PromoImageModel? promoImage;
 
   final Map<String, LogoImageModel> logoModels;
 

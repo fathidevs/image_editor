@@ -1,15 +1,15 @@
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:image_editor/editor/dls_kit_editor.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/editor/text_model.dart';
-import 'package:image_editor/kits/logo_images_widget.dart';
+import 'package:image_editor/kits/promo_image_model.dart';
 import 'package:image_editor/tools/custom_stl_widgets.dart';
 import 'package:image_editor/tools/image_from_link.dart';
 import 'package:image_editor/tools/image_from_storage.dart';
 import 'package:image_editor/tools/image_state.dart';
 
 import 'dlsk_consts.dart';
+import 'kits/logo_image_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<ImageModel> imageModels = [];
   Map<String, LogoImageModel> logoModels = {};
-  ui.Image? promoImage;
+  PromoImageModel? promoImage;
   List<TextModel> textModels = [];
   int pickedImageIndex = -1;
   int pickedTextIndex = -1;
@@ -58,6 +58,12 @@ class _MyHomePageState extends State<MyHomePage> {
     Kc.klss: Colors.brown,
     Kc.krus: Colors.teal,
     Kc.klus: Colors.blueGrey,
+    Kc.krls: Colors.lime,
+    Kc.klls: Colors.purple,
+    Kc.ksnc: Colors.lime,
+    Kc.ksonc: Colors.red,
+    Kc.kcr: Colors.red,
+    Kc.krg: Colors.black,
   };
 
   @override

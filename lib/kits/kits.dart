@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:image_editor/dlsk_consts.dart';
+import 'package:image_editor/kits/parts/circle.dart';
 import 'package:image_editor/kits/parts/left_short.dart';
 import 'package:image_editor/kits/parts/right_short_sleeve.dart';
 import 'package:image_editor/kits/parts/right_under_sleeve.dart';
+import 'package:image_editor/kits/parts/rings.dart';
 import 'full_shirt.dart';
 import 'parts/left_short_sleeve.dart';
 import 'parts/left_sock.dart';
 import 'parts/left_under_sleeve.dart';
+import 'parts/left_long_sleeve.dart';
+import 'parts/right_long_sleeve.dart';
 import 'parts/right_short.dart';
 import 'parts/right_sock.dart';
 
@@ -50,6 +54,13 @@ class KitPainter extends CustomPainter {
     //
     drawAndPaint(color[Kc.krus]!, RightUnderSleeve().getClip(size), canvas);
     drawAndPaint(color[Kc.klus]!, LeftUnderSleeve().getClip(size), canvas);
+    //
+    drawAndPaint(color[Kc.krls]!, RightLongSleeve().getClip(size), canvas);
+    drawAndPaint(color[Kc.klls]!, LeftLongSleeve().getClip(size), canvas);
+    //
+    drawAndPaint(color[Kc.kcr]!, Circle().getClip(size), canvas);
+    //
+    drawAndPaint(color[Kc.krg]!, Rings().getClip(size), canvas);
     //
     drawAndPaint(color[Kc.kfs]!, FullShirt().getClip(size), canvas);
   }

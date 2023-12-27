@@ -1,55 +1,41 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_editor/dlsk_consts.dart';
+import 'logo_image_model.dart';
 
-class LogoImagesWidget extends StatelessWidget {
+class LogoImagesList {
+  final BuildContext cx;
   final Map<String, LogoImageModel> models;
-  const LogoImagesWidget({
-    super.key,
+  const LogoImagesList({
     required this.models,
+    required this.cx,
   });
-
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1 / 1,
-      child: Stack(
-        children: [
-          if (models[Kc.krs] != null) logo(context, models[Kc.krs]!),
-          if (models[Kc.kls] != null) logo(context, models[Kc.kls]!),
-          if (models[Kc.kfs] != null) logo(context, models[Kc.kfs]!),
-          if (models[Kc.krsh] != null) logo(context, models[Kc.krsh]!),
-        ],
-      ),
-    );
-  }
-
-  logo(BuildContext cx, LogoImageModel model) {
+  _logo(model) {
     return Positioned(
       left: model.leftPosition,
       top: model.topPosition,
-      child: Image.file(
-        model.file,
+      child: Container(
         width: model.width,
         height: model.height,
-        filterQuality: FilterQuality.high,
-        isAntiAlias: true,
+        color: Colors.black,
+        child: RotatedBox(
+          quarterTurns: model.quarterTurns,
+          child: Image.file(
+            model.file,
+            filterQuality: FilterQuality.high,
+            isAntiAlias: true,
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
-}
 
-class LogoImageModel {
-  final File file;
-  final double leftPosition;
-  final double topPosition;
-  final double width;
-  final double height;
-  LogoImageModel({
-    required this.file,
-    required this.leftPosition,
-    required this.topPosition,
-    required this.width,
-    required this.height,
-  });
+  get() {
+    return [
+      if (models[Kc.krs] != null) _logo(models[Kc.krs]!),
+      if (models[Kc.kls] != null) _logo(models[Kc.kls]!),
+      if (models[Kc.kfs] != null) _logo(models[Kc.kfs]!),
+      if (models[Kc.krsh] != null) _logo(models[Kc.krsh]!),
+    ];
+  }
 }

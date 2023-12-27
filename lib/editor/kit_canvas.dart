@@ -1,92 +1,74 @@
-import 'dart:ui' as ui;
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:image_editor/dlsk_consts.dart';
+import 'package:image_editor/editor/added_images_widget.dart';
+import 'package:image_editor/editor/added_text_widgets.dart';
 import 'package:image_editor/editor/image_model.dart';
-import 'package:image_editor/editor/image_container.dart';
-import 'package:image_editor/editor/text_container.dart';
 import 'package:image_editor/editor/text_model.dart';
 import 'package:image_editor/kits/kits.dart';
 import 'package:image_editor/kits/logo_images_widget.dart';
 import 'package:image_editor/kits/promo_image.dart';
-import 'package:image_editor/kits/logos_placements.dart';
 import 'package:image_editor/kits/master.dart';
+import 'package:image_editor/kits/promo_image_model.dart';
+import '../kits/logo_image_model.dart';
+import '../kits/shirt_number_color.dart';
+import '../kits/short_number_color.dart';
 
 class KitCanvas extends StatelessWidget {
   final List<ImageModel> imageModels;
   final Map<String, LogoImageModel> logoModels;
-  final Map<String, Color> kitColors;
+  final PromoImageModel? promoImage;
   final List<TextModel> textModels;
-  final ui.Image? promoImage;
+  final Map<String, Color> kitColors;
 
   const KitCanvas({
     super.key,
     required this.imageModels,
     required this.logoModels,
-    required this.kitColors,
-    required this.textModels,
     required this.promoImage,
+    required this.textModels,
+    required this.kitColors,
   });
 
   @override
   Widget build(BuildContext context) {
-    List<Positioned> listOfImages = List.generate(imageModels.length, (i) {
-      return Positioned(
-        left: imageModels[i].positions!['x'],
-        top: imageModels[i].positions!['y'],
-        child: Transform.rotate(
-          angle: ((imageModels[i].angle!['a'] ?? 0.0) / 180.0) * pi,
-          child: ImageContainer(
-            model: imageModels[i],
-          ),
-        ),
-      );
-    });
-    List<Positioned> listOfText = List.generate(textModels.length, (i) {
-      return Positioned(
-        left: textModels[i].positions!['x']!,
-        top: textModels[i].positions!['y'],
-        child: TextContainer(model: textModels[i]),
-      );
-    });
-
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: Stack(children: [
         Kits(colors: kitColors),
-        for (int i = 0; i < listOfImages.length; i++)
+        for (int i = 0; i < imageModels.length; i++)
           ClipPath(
             // IMAGES
             clipper: Master(model: imageModels[i]),
-            child: Stack(children: [listOfImages[i]]),
+
+            child: Stack(children: [
+              AddedImageWidgets(models: imageModels).get(i),
+            ]),
           ),
-        for (int j = 0; j < listOfText.length; j++)
+        for (int j = 0; j < textModels.length; j++)
           ClipPath(
             // TEXT
             // clipper: Master(model: imageModels[i]),
-            child: Stack(children: [listOfText[j]]),
+            child: Stack(children: [
+              AddedTextWidgets(models: textModels).get(j),
+            ]),
           ),
-        PromoImage(
-          image: promoImage,
-        ),
-
-        LogoImagesWidget(models: logoModels),
-        Opacity(
-          // DELETE ME
-          opacity: .0,
+        PromoImage(model: promoImage).get(),
+        for (int k = 0; k < logoModels.length; k++)
+          LogoImagesList(cx: context, models: logoModels).get()[k],
+        Positioned.fill(
           child: CustomPaint(
+            painter: ShirtNumberColor(color: kitColors[Kc.ksnc]!),
             size: Size(MediaQuery.sizeOf(context).width,
                 MediaQuery.sizeOf(context).width),
-            painter: LogoPlacements(),
           ),
         ),
-        // Opacity( // DELETE ME
-        //   opacity: 1.0,
-        //   child: CustomPaint(
-        //     size: Size(MediaQuery.sizeOf(context).width,
-        //         MediaQuery.sizeOf(context).width),
-        //     painter: RPSCustomPainter(),
-        //   ),
-        // ),
+        Positioned.fill(
+          child: CustomPaint(
+            painter: ShortNumberColor(color: kitColors[Kc.ksonc]!),
+            size: Size(MediaQuery.sizeOf(context).width,
+                MediaQuery.sizeOf(context).width),
+          ),
+        ),
       ]),
     );
   }

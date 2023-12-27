@@ -1,38 +1,31 @@
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:image_editor/kits/promo_image_model.dart';
 
-class PromoImage extends StatelessWidget {
-  final ui.Image? image;
-  const PromoImage({
-    super.key,
-    required this.image,
+class PromoImage {
+  final PromoImageModel? model;
+  PromoImage({
+    required this.model,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1 / 1,
-      child: CustomPaint(
-        painter: PromoPainter(image: image),
-        size: MediaQuery.sizeOf(context),
+  get() {
+    if (model == null) return Container();
+    return Positioned(
+      left: model!.leftPosition,
+      top: model!.topPosition,
+      child: Container(
+        color: Colors.amber,
+        width: model!.width,
+        height: model!.height,
+        child: RotatedBox(
+          quarterTurns: model!.quarterTurns,
+          child: Image.file(
+            model!.file,
+            filterQuality: FilterQuality.high,
+            isAntiAlias: true,
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
-}
-
-class PromoPainter extends CustomPainter {
-  final ui.Image? image;
-  PromoPainter({
-    required this.image,
-  });
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (image != null) {
-      canvas.drawImage(image!,
-          Offset(size.width * 0.7439453, size.height * 0.2916016), Paint());
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -6,8 +6,8 @@ import 'package:flutter_svg/parser.dart';
 import 'package:image_editor/dlsk_consts.dart';
 import 'package:image_editor/editor/image_model.dart';
 import 'package:image_editor/kits/master.dart';
-
-import '../kits/logo_images_widget.dart';
+import 'package:image_editor/kits/promo_image_model.dart';
+import '../kits/logo_image_model.dart';
 
 class ImageFromStorage {
   _pickedFile() async {
@@ -71,44 +71,22 @@ class ImageFromStorage {
     return imageModel;
   }
 
-  Future pickPromo(double width) async {
+  Future pickPromo(double canvasWidth) async {
     Map<String, dynamic>? pickedFile = await _pickedFile();
     if (pickedFile == null) return;
-    final bytes = pickedFile['content'].readAsBytes();
-    final codec0 = await instantiateImageCodec(await bytes);
-    int w = (await codec0.getNextFrame()).image.width;
-    int h = (await codec0.getNextFrame()).image.height;
-    final codec = await instantiateImageCodec(
-      await bytes,
-      targetWidth: w < h ? (width * 0.07207031).toInt() : null,
-      targetHeight: w > h ? (width * 0.1550781).toInt() : null,
+    // final bytes = pickedFile['content'].readAsBytes();
+    // final codec0 = await instantiateImageCodec(await bytes);
+    // int w = (await codec0.getNextFrame()).image.width;
+    // int h = (await codec0.getNextFrame()).image.height;
+
+    return PromoImageModel(
+      file: pickedFile['content'],
+      leftPosition: canvasWidth * 0.7439453,
+      topPosition: canvasWidth * 0.2916016,
+      width: canvasWidth * 0.07207031,
+      height: canvasWidth * 0.1550781,
+      quarterTurns: 0,
     );
-
-    final frameInfo = await codec.getNextFrame();
-    return frameInfo.image;
-  }
-
-  Future pickLogo1(double canvasWidth) async {
-    // SIZES
-    // size.width * 0.03437500, size.height * 0.04140625 right+left sock
-    // size.width * 0.02792969, size.height * 0.03359375 shirt
-    // size.width * 0.04218750, size.height * 0.03496094 short right
-    Map<String, dynamic>? pickedFile = await _pickedFile();
-    Map<String, Image> returnLogoMap = {};
-    if (pickedFile == null) return;
-    final bytes = pickedFile['content'].readAsBytes();
-    Image sockLogo = await resizedImage(
-        bytes, canvasWidth * 0.03437500, canvasWidth * 0.04140625);
-    returnLogoMap[Kc.krs] = sockLogo;
-    returnLogoMap[Kc.kls] = sockLogo;
-    Image shirtLogo = await resizedImage(
-        bytes, canvasWidth * 0.02792969, canvasWidth * 0.03359375);
-    returnLogoMap[Kc.kfs] = shirtLogo;
-    Image rightShortLogo = await resizedImage(
-        bytes, canvasWidth * 0.04218750, canvasWidth * 0.03496094);
-    returnLogoMap[Kc.krsh] = rightShortLogo;
-
-    return returnLogoMap;
   }
 
   Future pickLogo(double canvasWidth) async {
@@ -123,6 +101,7 @@ class ImageFromStorage {
         topPosition: canvasWidth * 0.1560547,
         width: canvasWidth * 0.03437500,
         height: canvasWidth * 0.04140625,
+        quarterTurns: 3,
       ),
       Kc.kls: LogoImageModel(
         file: pickedFile['content'],
@@ -130,6 +109,7 @@ class ImageFromStorage {
         topPosition: canvasWidth * 0.1560547,
         width: canvasWidth * 0.03437500,
         height: canvasWidth * 0.04140625,
+        quarterTurns: 3,
       ),
       Kc.kfs: LogoImageModel(
         file: pickedFile['content'],
@@ -137,6 +117,7 @@ class ImageFromStorage {
         topPosition: canvasWidth * 0.4058594,
         width: canvasWidth * 0.02792969,
         height: canvasWidth * 0.03359375,
+        quarterTurns: 3,
       ),
       Kc.krsh: LogoImageModel(
         file: pickedFile['content'],
@@ -144,15 +125,16 @@ class ImageFromStorage {
         topPosition: canvasWidth * 0.8837891,
         width: canvasWidth * 0.04218750,
         height: canvasWidth * 0.03496094,
+        quarterTurns: 0,
       ),
     };
   }
 
-  resizedImage(dynamic bytes, double width, double height) async {
+  resizedImage(dynamic bytes, int? width, int? height) async {
     final codec = await instantiateImageCodec(
       await bytes,
-      // targetWidth: width.toInt(),
-      // targetHeight: height.toInt(),
+      targetWidth: width,
+      targetHeight: height,
     );
     final frameInfo = await codec.getNextFrame();
     return frameInfo.image;
