@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:image_editor/dlsk_consts.dart';
-import 'package:image_editor/editor/added_images_widget.dart';
-import 'package:image_editor/editor/added_text_widgets.dart';
-import 'package:image_editor/editor/image_model.dart';
-import 'package:image_editor/editor/text_model.dart';
-import 'package:image_editor/kits/kits.dart';
-import 'package:image_editor/kits/logo_images_widget.dart';
-import 'package:image_editor/kits/promo_image.dart';
-import 'package:image_editor/kits/master.dart';
-import 'package:image_editor/kits/promo_image_model.dart';
-import '../kits/logo_image_model.dart';
+import '../widgets/kits.dart';
+import '../models/logo_image_model.dart';
+import '../widgets/logo_images_widget.dart';
+import '../kits/master.dart';
+import '../widgets/promo_image.dart';
+import '../models/promo_image_model.dart';
 import '../kits/shirt_number_color.dart';
 import '../kits/short_number_color.dart';
+import '../tools/selected_kit_color.dart';
+import '../widgets/added_images_widget.dart';
+import '../widgets/added_text_widgets.dart';
+import '../models/image_model.dart';
+import '../models/text_model.dart';
 
 class KitCanvas extends StatelessWidget {
   final List<ImageModel> imageModels;
-  final Map<String, LogoImageModel> logoModels;
+  final Map<Enum, LogoImageModel> logoModels;
   final PromoImageModel? promoImage;
   final List<TextModel> textModels;
-  final Map<String, Color> kitColors;
+  final SelectedKitColor kitColors;
 
   const KitCanvas({
     super.key,
@@ -34,7 +34,7 @@ class KitCanvas extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: Stack(children: [
-        Kits(colors: kitColors),
+        Kits(color: kitColors),
         for (int i = 0; i < imageModels.length; i++)
           ClipPath(
             // IMAGES
@@ -57,14 +57,14 @@ class KitCanvas extends StatelessWidget {
           LogoImagesList(cx: context, models: logoModels).get()[k],
         Positioned.fill(
           child: CustomPaint(
-            painter: ShirtNumberColor(color: kitColors[Kc.ksnc]!),
+            painter: ShirtNumberColor(color: kitColors.shirtNumberColor),
             size: Size(MediaQuery.sizeOf(context).width,
                 MediaQuery.sizeOf(context).width),
           ),
         ),
         Positioned.fill(
           child: CustomPaint(
-            painter: ShortNumberColor(color: kitColors[Kc.ksonc]!),
+            painter: ShortNumberColor(color: kitColors.shortNumberColor),
             size: Size(MediaQuery.sizeOf(context).width,
                 MediaQuery.sizeOf(context).width),
           ),

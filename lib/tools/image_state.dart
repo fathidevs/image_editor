@@ -1,4 +1,5 @@
-import 'package:image_editor/editor/image_model.dart';
+import '../models/image_model.dart';
+import 'enums.dart';
 
 class ImageState {
   final ImageModel? imageModel;
@@ -7,29 +8,29 @@ class ImageState {
     required this.imageModel,
   });
 
-  Map<String, double?> drag(double dx, double dy, double maxPosition) {
+  Map<Enum, double?> drag(double dx, double dy, double maxPosition) {
     if (shape() == 0) {
       // square
-      dx -= (imageModel!.dimensions!['h']! * .5);
-      dy -= (imageModel!.dimensions!['h']! * .75);
+      dx -= (imageModel!.dimensions![Dim.height]! * .5);
+      dy -= (imageModel!.dimensions![Dim.height]! * .75);
     } else if (shape() == 1) {
       // portrait
-      dx -= (imageModel!.dimensions!['h']! * .5);
-      dy -= (imageModel!.dimensions!['h']! * .75);
+      dx -= (imageModel!.dimensions![Dim.height]! * .5);
+      dy -= (imageModel!.dimensions![Dim.height]! * .75);
     } else {
       // landscape
-      dx -= (imageModel!.dimensions!['w']! * .5);
-      dy -= (imageModel!.dimensions!['w']! * .75);
+      dx -= (imageModel!.dimensions![Dim.width]! * .5);
+      dy -= (imageModel!.dimensions![Dim.width]! * .75);
     }
     imageModel!.positions!.update(
-        'x',
+        Loc.x,
         (value) => dx > 0.0
             ? dx <= maxPosition
                 ? dx
                 : maxPosition
             : 0.0);
     imageModel!.positions!.update(
-        'y',
+        Loc.y,
         (value) => dy > 0.0
             ? dy <= maxPosition
                 ? dy
@@ -38,27 +39,28 @@ class ImageState {
     return imageModel!.positions!;
   }
 
-  Map<String, double?> scale(double newValue) {
+  Map<Enum, double?> scale(double newValue) {
     if (shape() == 0) {
       // square
-      imageModel!.dimensions!.update('w', (value) => newValue);
-      imageModel!.dimensions!.update('h', (value) => newValue);
+      imageModel!.dimensions!.update(Dim.width, (value) => newValue);
+      imageModel!.dimensions!.update(Dim.height, (value) => newValue);
     } else if (shape() == 1) {
       // portrait
-      imageModel!.dimensions!.update('h', (value) => newValue);
+      imageModel!.dimensions!.update(Dim.height, (value) => newValue);
     } else {
       // landscape
-      imageModel!.dimensions!.update('w', (value) => newValue);
+      imageModel!.dimensions!.update(Dim.width, (value) => newValue);
     }
     return imageModel!.dimensions!;
   }
 
   moveX(double value) {
-    imageModel!.positions!.update('x', (val) => value);
+    imageModel!.positions!.update(Loc.x, (val) => value);
     return imageModel!.positions!;
   }
+
   moveY(double value) {
-    imageModel!.positions!.update('y', (val) => value);
+    imageModel!.positions!.update(Loc.y, (val) => value);
     return imageModel!.positions!;
   }
 

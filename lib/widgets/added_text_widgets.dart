@@ -1,8 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:image_editor/editor/text_container.dart';
-import 'package:image_editor/editor/text_model.dart';
+import '../models/text_model.dart';
+import 'text_container.dart';
 
 class AddedTextWidgets {
   final List<TextModel> models;

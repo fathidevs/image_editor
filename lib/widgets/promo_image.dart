@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:image_editor/kits/promo_image_model.dart';
+import '../models/promo_image_model.dart';
 
 class PromoImage {
   final PromoImageModel? model;

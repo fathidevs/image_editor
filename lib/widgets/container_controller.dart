@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:image_editor/editor/image_container.dart';
-import 'package:image_editor/editor/text_container.dart';
+import '../tools/enums.dart';
+import 'image_container.dart';
+import 'text_container.dart';
 
 class ContainerController extends StatelessWidget {
   final List<dynamic> models;
@@ -23,14 +24,14 @@ class ContainerController extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Positioned> listOfImages = List.generate(models.length, (i) {
       return Positioned(
-        left: models[i].positions!['x']!,
-        top: models[i].positions!['y']!,
+        left: models[i].positions![Loc.x]!,
+        top: models[i].positions![Loc.y]!,
         child: GestureDetector(
           onTap: () {
             onImagePicked(i);
           },
           child: Transform.rotate(
-            angle: (models[i].angle!['a']! / 180) * pi,
+            angle: (models[i].angle![Loc.a]! / 180) * pi,
             child: Container(
               decoration:
                   BoxDecoration(border: pickedBorder(i == pickedImageIndex)),

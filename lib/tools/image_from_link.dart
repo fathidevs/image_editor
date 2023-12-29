@@ -2,9 +2,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_editor/editor/image_model.dart';
-import 'package:image_editor/kits/master.dart';
 import 'package:xml/xml.dart' as xml;
+import '../kits/master.dart';
+import '../models/image_model.dart';
+import 'enums.dart';
 
 class ImageFromLink {
   static Future<ImageModel> imageFromLink(String link, double w) async {
@@ -20,11 +21,10 @@ class ImageFromLink {
     imageModel.type = imageModel.getType(link);
     imageModel.dimensions = imageModel.scaleImage();
     imageModel.positions = imageModel.centerImage();
-    imageModel.angle = {'a': 0.0};
+    imageModel.angle = {Loc.a: 0.0};
     imageModel.getShape = imageModel.shape();
     imageModel.clippedTo = Master.allClips();
     return imageModel;
-    
   }
 
   static Future<Size> _imgSize(link) async {

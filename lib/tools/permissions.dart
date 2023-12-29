@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -8,20 +7,18 @@ class Permish {
 
   Future<PermissionStatus> status(Permission permission) async {
     PermissionStatus status = await permission.request();
-    
-      
+
     return status;
   }
-  getPermission(Permission permission) async{
+
+  getPermission(Permission permission) async {
     PermissionStatus isDenied = await status(permission);
-      var v=await Permission.manageExternalStorage.request()
-      ;
-      toast("Permission: ${(v)}");
-    if(isDenied.isDenied){
-      
-    }
+    var v = await Permission.manageExternalStorage.request();
+    toast("Permission: ${(v)}");
+    if (isDenied.isDenied) {}
   }
-  toast(msg){
+
+  toast(msg) {
     ScaffoldMessenger.of(cx).showSnackBar(SnackBar(content: Text(msg)));
   }
 }

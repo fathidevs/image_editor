@@ -3,11 +3,11 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_svg/parser.dart';
-import 'package:image_editor/dlsk_consts.dart';
-import 'package:image_editor/editor/image_model.dart';
-import 'package:image_editor/kits/master.dart';
-import 'package:image_editor/kits/promo_image_model.dart';
-import '../kits/logo_image_model.dart';
+import '../kits/master.dart';
+import '../models/image_model.dart';
+import '../models/logo_image_model.dart';
+import '../models/promo_image_model.dart';
+import 'enums.dart';
 
 class ImageFromStorage {
   _pickedFile() async {
@@ -64,7 +64,7 @@ class ImageFromStorage {
     imageModel.type = pickedFile['exe'];
     imageModel.dimensions = imageModel.scaleImage();
     imageModel.positions = imageModel.centerImage();
-    imageModel.angle = {'a': 0.0};
+    imageModel.angle = {Loc.a: 0.0};
     imageModel.getShape = imageModel.shape();
     imageModel.clippedTo = Master.allClips();
 
@@ -95,7 +95,7 @@ class ImageFromStorage {
     if (pickedFile == null) return;
 
     return {
-      Kc.krs: LogoImageModel(
+      Kit.rightSock: LogoImageModel(
         file: pickedFile['content'],
         leftPosition: canvasWidth * 0.5767578,
         topPosition: canvasWidth * 0.1560547,
@@ -103,7 +103,7 @@ class ImageFromStorage {
         height: canvasWidth * 0.04140625,
         quarterTurns: 3,
       ),
-      Kc.kls: LogoImageModel(
+      Kit.leftSock: LogoImageModel(
         file: pickedFile['content'],
         leftPosition: canvasWidth * 0.8330078,
         topPosition: canvasWidth * 0.1560547,
@@ -111,7 +111,7 @@ class ImageFromStorage {
         height: canvasWidth * 0.04140625,
         quarterTurns: 3,
       ),
-      Kc.kfs: LogoImageModel(
+      Kit.fullShirt: LogoImageModel(
         file: pickedFile['content'],
         leftPosition: canvasWidth * 0.6871094,
         topPosition: canvasWidth * 0.4058594,
@@ -119,7 +119,7 @@ class ImageFromStorage {
         height: canvasWidth * 0.03359375,
         quarterTurns: 3,
       ),
-      Kc.krsh: LogoImageModel(
+      Kit.rightShort: LogoImageModel(
         file: pickedFile['content'],
         leftPosition: canvasWidth * 0.7318359,
         topPosition: canvasWidth * 0.8837891,

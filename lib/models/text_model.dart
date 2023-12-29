@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import '../tools/enums.dart';
 
 class TextModel {
   String? text;
-  Map<String, double?>? dimensions;
-  Map<String, double?>? positions;
-  Map<String, double>? angle;
+  Map<Enum, double?>? dimensions;
+  Map<Enum, double?>? positions;
+  Map<Enum, double>? angle;
   Size? size;
   double? canvasWidth;
-  Map<String, bool>? clippedTo;
+  Map<Enum, bool>? clippedTo;
   Color? color;
 
   TextModel({
@@ -21,10 +22,10 @@ class TextModel {
     this.color,
   });
 
-  Map<String, double> centerText() {
+  Map<Enum, double> centerText() {
     return {
-      'x': canvasWidth! * .2,
-      'y': canvasWidth! * .2,
+      Loc.x: canvasWidth! * .2,
+      Loc.y: canvasWidth! * .2,
     };
   }
 }

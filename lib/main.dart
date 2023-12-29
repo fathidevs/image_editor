@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:image_editor/editor/dls_kit_editor.dart';
-import 'package:image_editor/editor/image_model.dart';
-import 'package:image_editor/editor/text_model.dart';
-import 'package:image_editor/kits/promo_image_model.dart';
-import 'package:image_editor/tools/custom_stl_widgets.dart';
-import 'package:image_editor/tools/image_from_link.dart';
-import 'package:image_editor/tools/image_from_storage.dart';
-import 'package:image_editor/tools/image_state.dart';
-
-import 'dlsk_consts.dart';
-import 'kits/logo_image_model.dart';
+import 'editor/dls_kit_editor.dart';
+import 'models/image_model.dart';
+import 'models/logo_image_model.dart';
+import 'models/promo_image_model.dart';
+import 'models/text_model.dart';
+import 'tools/color_picker.dart';
+import 'tools/enums.dart';
+import 'tools/image_from_link.dart';
+import 'tools/image_from_storage.dart';
+import 'tools/image_state.dart';
+import 'tools/kit_selector.dart';
+import 'tools/selected_kit_color.dart';
+import 'widgets/custom_stl_widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,29 +44,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ImageModel> imageModels = [];
-  Map<String, LogoImageModel> logoModels = {};
+  Map<Enum, LogoImageModel> logoModels = {};
   PromoImageModel? promoImage;
   List<TextModel> textModels = [];
   int pickedImageIndex = -1;
   int pickedTextIndex = -1;
   bool imagePickerIsNotActive = true;
-  Map<String, Color> kitColors = {
-    Kc.kfs: Colors.grey,
-    Kc.krs: Colors.red,
-    Kc.kls: Colors.green,
-    Kc.klsh: Colors.blue,
-    Kc.krsh: Colors.amber,
-    Kc.krss: Colors.orange,
-    Kc.klss: Colors.brown,
-    Kc.krus: Colors.teal,
-    Kc.klus: Colors.blueGrey,
-    Kc.krls: Colors.lime,
-    Kc.klls: Colors.purple,
-    Kc.ksnc: Colors.lime,
-    Kc.ksonc: Colors.red,
-    Kc.kcr: Colors.red,
-    Kc.krg: Colors.black,
-  };
+
+  KitSelector kitColorSelector = KitSelector();
+  SelectedKitColor selectedKitColor = SelectedKitColor();
+  Color historyColor = Colors.white;
+
+  // KitColorSelector kitColorSelector = KitColorSelector();
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 imageModels: imageModels,
                 logoModels: logoModels,
                 textModels: textModels,
-                kitColors: kitColors,
+                kitColors: selectedKitColor,
                 pickedImageIndex: pickedImageIndex,
                 onPanUpdateImageController: (DragUpdateDetails details) =>
                     onPanUpdateImageController(
@@ -123,6 +114,43 @@ class _MyHomePageState extends State<MyHomePage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        title: const Text("pick color"),
+                        content: ColorPickerx.pick(
+                          defaultColor:
+                              selectedKitColor.history(kitColorSelector),
+                          onColorChanged: (color) {
+                            setState(() {
+                              historyColor = color;
+                            });
+                          },
+                        ),
+                        actions: [
+                          ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedKitColor.paint(
+                                      kitColorSelector, historyColor);
+                                });
+                                Navigator.pop(context);
+                              },
+                              child: const Text("okay")),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("cancel")),
+                        ],
+                      );
+                    });
+              },
+              child: const Text("color"),
+            ),
             ElevatedButton(
               onPressed: () {
                 if (imagePickerIsNotActive) logoImageFromStorage(canvasWidth);
@@ -177,9 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                changeKitColor('pants');
-              },
+              onPressed: () {},
               child: const Text(
                 "kit color",
                 textAlign: TextAlign.center,
@@ -203,10 +229,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget imageControllerWidgets(
       ImageState imageState, double maxPosition, double canvasWidth) {
     double? imgWidth = pickedImageIndex >= 0
-        ? imageModels[pickedImageIndex].dimensions!['w']
+        ? imageModels[pickedImageIndex].dimensions![Dim.width]
         : null;
     double? imgHeight = pickedImageIndex >= 0
-        ? imageModels[pickedImageIndex].dimensions!['h']
+        ? imageModels[pickedImageIndex].dimensions![Dim.height]
         : null;
     return Column(
       children: [
@@ -215,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icons.swap_horiz_rounded,
             max: maxPosition,
             value: imageModels.isNotEmpty
-                ? imageModels[pickedImageIndex].positions!['x']!
+                ? imageModels[pickedImageIndex].positions![Loc.x]!
                 : 0.0,
             onChanged: (value) {
               setState(() {
@@ -227,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icons.swap_vert_rounded,
             max: maxPosition,
             value: imageModels.isNotEmpty
-                ? imageModels[pickedImageIndex].positions!['y']!
+                ? imageModels[pickedImageIndex].positions![Loc.y]!
                 : 0.0,
             onChanged: (value) {
               setState(() {
@@ -254,13 +280,13 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icons.rotate_right_rounded,
             max: 270.0,
             value: imageModels.isNotEmpty
-                ? imageModels[pickedImageIndex].angle!['a']!
+                ? imageModels[pickedImageIndex].angle![Loc.a]!
                 : 0.0,
             onChanged: (value) {
               setState(() {
                 imageModels[pickedImageIndex]
                     .angle!
-                    .update('a', (val) => value);
+                    .update(Loc.a, (val) => value);
               });
             }),
       ],
@@ -271,18 +297,24 @@ class _MyHomePageState extends State<MyHomePage> {
     return Column(
       children: [
         CustomStlWidgets().checkBox(
-            'full_shirt',
+            'full shirt',
             imageModels.isNotEmpty
-                ? imageModels[pickedImageIndex].clippedTo!['full_shirt']!
+                ? imageModels[pickedImageIndex].clippedTo![Kit.fullShirt]!
                 : false, (v) {
           if (imageModels.isNotEmpty) {
             setState(() {
               imageModels
                   .elementAt(pickedImageIndex)
                   .clippedTo!
-                  .update("full_shirt", (value) => !value);
+                  .update(Kit.fullShirt, (value) => !value);
             });
           }
+        }),
+        CustomStlWidgets().checkBox("shirt color", kitColorSelector.fullShirt,
+            (v) {
+          setState(() {
+            kitColorSelector.fullShirt = v;
+          });
         }),
       ],
     );
@@ -379,12 +411,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  changeKitColor(String key) {
-    setState(() {
-      kitColors.update(key, (value) => Colors.amber);
-    });
-  }
-
   addTextDialog(BuildContext cx) {
     TextEditingController controller = TextEditingController();
     showModalBottomSheet(
@@ -432,7 +458,7 @@ class _MyHomePageState extends State<MyHomePage> {
         textModel.text = controller.text.trim();
         textModel.canvasWidth = MediaQuery.of(context).size.width;
         textModel.positions = textModel.centerText();
-        textModel.angle = {'a': 0.0};
+        textModel.angle = {Loc.a: 0.0};
         textModels.add(textModel);
       });
     }

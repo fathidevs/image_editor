@@ -1,17 +1,18 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'dart:ui';
+import '../tools/enums.dart';
 
 class ImageModel {
-  Map<String, double?>? dimensions;
-  Map<String, double?>? positions;
-  Map<String, double>? angle;
+  Map<Enum, double?>? dimensions;
+  Map<Enum, double?>? positions;
+  Map<Enum, double>? angle;
   String? type;
   dynamic content;
   Size? size;
   double? canvasWidth;
   int? getShape;
   bool isNetwork;
-  Map<String, bool>? clippedTo;
+  Map<Enum, bool>? clippedTo;
   Color? color;
 
   ImageModel({
@@ -28,8 +29,8 @@ class ImageModel {
     this.color,
   });
 
-  Map<String, double> findSize() {
-    Map<String, double> returnMap = {};
+  Map<Enum, double> findSize() {
+    Map<Enum, double> returnMap = {};
     if (size?.width != null && size?.height != null) {
       // original dimensions
       double originalW = size!.width;
@@ -38,63 +39,60 @@ class ImageModel {
       if (shape() == 1) {
         // portrait
         double newWidth = originalW * canvasWidth! / originalH;
-        returnMap['nw'] = newWidth;
-        returnMap['nh'] = canvasWidth!;
+        returnMap[Dim.newWidth] = newWidth;
+        returnMap[Dim.newHeight] = canvasWidth!;
       } else {
         // portrait
         double newHeight = originalH * canvasWidth! / originalW;
-        returnMap['nw'] = canvasWidth!;
-        returnMap['nh'] = newHeight;
+        returnMap[Dim.newWidth] = canvasWidth!;
+        returnMap[Dim.newHeight] = newHeight;
       }
     }
 
     return returnMap;
   }
 
-  Map<String, double?> scaleImage() {
+  Map<Enum, double?> scaleImage() {
     switch (shape()) {
       case 0: // square
 
-        return {'w': canvasWidth, 'h': canvasWidth};
+        return {Dim.width: canvasWidth, Dim.height: canvasWidth};
 
       case 1: //portrait
 
-        return {'w': null, 'h': canvasWidth};
+        return {Dim.width: null, Dim.height: canvasWidth};
       case 2: // landscape
 
-        return {'w': canvasWidth, 'h': null};
+        return {Dim.width: canvasWidth, Dim.height: null};
       default:
-        return {'w': null, 'h': null};
+        return {Dim.width: null, Dim.height: null};
     }
   }
 
-  Map<String, double?> centerImage() {
-    Map<String, double> sizeFinder = findSize();
+  Map<Enum, double?> centerImage() {
+    Map<Enum, double> sizeFinder = findSize();
 
     switch (shape()) {
       case 0: // square
 
-        return {
-          'x': canvasWidth! / 2,
-          'y': (canvasWidth! / 2) 
-        };
+        return {Loc.x: canvasWidth! / 2, Loc.y: (canvasWidth! / 2)};
 
       case 1: // portrait
 
         return {
-          'x': canvasWidth! / 2 + sizeFinder['nw']! / 2,
-          'y': canvasWidth! / 2
+          Loc.x: canvasWidth! / 2 + sizeFinder[Dim.newWidth]! / 2,
+          Loc.y: canvasWidth! / 2
         };
 
       case 2: // landscape
 
         return {
-          'x': canvasWidth! / 2,
-          'y': (canvasWidth! / 2) + (sizeFinder['nh']! /2)
+          Loc.x: canvasWidth! / 2,
+          Loc.y: (canvasWidth! / 2) + (sizeFinder[Dim.newHeight]! / 2)
         };
 
       default:
-        return {'x': null, 'y': null};
+        return {Loc.x: null, Loc.y: null};
     }
   }
 

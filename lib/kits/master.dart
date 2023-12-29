@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:image_editor/dlsk_consts.dart';
-import 'package:image_editor/editor/image_model.dart';
-import 'package:image_editor/kits/parts/circle.dart';
-import 'package:image_editor/kits/parts/left_short.dart';
-import 'package:image_editor/kits/parts/left_long_sleeve.dart';
-import 'package:image_editor/kits/parts/right_short.dart';
-import 'package:image_editor/kits/parts/right_short_sleeve.dart';
-import 'package:image_editor/kits/parts/right_sock.dart';
-import 'package:image_editor/kits/parts/rings.dart';
-import 'full_shirt.dart';
+
+import '../models/image_model.dart';
+import '../tools/enums.dart';
+import 'parts/circle.dart';
+import 'parts/full_shirt.dart';
+import 'parts/left_long_sleeve.dart';
+import 'parts/left_short.dart';
 import 'parts/left_short_sleeve.dart';
 import 'parts/left_sock.dart';
 import 'parts/left_under_sleeve.dart';
 import 'parts/right_long_sleeve.dart';
+import 'parts/right_short.dart';
+import 'parts/right_short_sleeve.dart';
+import 'parts/right_sock.dart';
 import 'parts/right_under_sleeve.dart';
+import 'parts/rings.dart';
 
 /*
 
@@ -27,7 +28,7 @@ import 'parts/right_under_sleeve.dart';
 */
 
 class Master extends CustomClipper<Path> {
-  final Map<String, bool>? selectKit;
+  final Map<Enum, bool>? selectKit;
   final ImageModel model;
 
   Master({
@@ -39,43 +40,43 @@ class Master extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path p = Path();
 
-    if (model.clippedTo![Kc.kfs]!) {
+    if (model.clippedTo![Kit.fullShirt]!) {
       p.addPath(FullShirt().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.krs]!) {
+    if (model.clippedTo![Kit.rightSock]!) {
       p.addPath(RightSock().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.kls]!) {
+    if (model.clippedTo![Kit.leftSock]!) {
       p.addPath(LeftSock().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.krsh]!) {
+    if (model.clippedTo![Kit.rightShort]!) {
       p.addPath(RightShort().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.klsh]!) {
+    if (model.clippedTo![Kit.leftShort]!) {
       p.addPath(LeftShort().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.krss]!) {
+    if (model.clippedTo![Kit.rightShortSleeve]!) {
       p.addPath(RightShortSleeve().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.krss]!) {
+    if (model.clippedTo![Kit.leftShortSleeve]!) {
       p.addPath(LeftShortSleeve().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.krus]!) {
+    if (model.clippedTo![Kit.rightUnderSleeve]!) {
       p.addPath(RightUnderSleeve().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.klus]!) {
+    if (model.clippedTo![Kit.leftUnderSleeve]!) {
       p.addPath(LeftUnderSleeve().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.krls]!) {
+    if (model.clippedTo![Kit.rightLongSleeve]!) {
       p.addPath(RightLongSleeve().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.klls]!) {
+    if (model.clippedTo![Kit.leftLongSleeve]!) {
       p.addPath(LeftLongSleeve().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.kcr]!) {
+    if (model.clippedTo![Kit.circle]!) {
       p.addPath(Circle().getClip(size), Offset.zero);
     }
-    if (model.clippedTo![Kc.krg]!) {
+    if (model.clippedTo![Kit.rings]!) {
       p.addPath(Rings().getClip(size), Offset.zero);
     }
 
@@ -85,21 +86,21 @@ class Master extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
 
-  static Map<String, bool> allClips() {
+  static Map<Enum, bool> allClips() {
     return {
-      Kc.kfs: true,
-      Kc.krs: true,
-      Kc.kls: true,
-      Kc.krsh: true,
-      Kc.klsh: true,
-      Kc.krss: true,
-      Kc.klss: true,
-      Kc.krus: true,
-      Kc.klus: true,
-      Kc.krls: true,
-      Kc.klls: true,
-      Kc.kcr: true,
-      Kc.krg: true,
+      Kit.fullShirt: true,
+      Kit.rightSock: true,
+      Kit.leftSock: true,
+      Kit.rightShort: true,
+      Kit.leftShort: true,
+      Kit.rightShortSleeve: true,
+      Kit.leftShortSleeve: true,
+      Kit.rightUnderSleeve: true,
+      Kit.leftUnderSleeve: true,
+      Kit.rightLongSleeve: true,
+      Kit.leftLongSleeve: true,
+      Kit.circle: true,
+      Kit.rings: true,
     };
   }
 }

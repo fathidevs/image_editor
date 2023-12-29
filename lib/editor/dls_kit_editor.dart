@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:image_editor/editor/container_controller.dart';
-import 'package:image_editor/editor/image_model.dart';
-import 'package:image_editor/editor/kit_canvas.dart';
-import 'package:image_editor/editor/text_model.dart';
-import 'package:image_editor/kits/promo_image_model.dart';
-import '../kits/logo_image_model.dart';
+
+import '../models/image_model.dart';
+import '../models/logo_image_model.dart';
+import '../models/promo_image_model.dart';
+import '../models/text_model.dart';
+import '../tools/selected_kit_color.dart';
+import '../widgets/container_controller.dart';
+import 'kit_canvas.dart';
 
 class DlsKitEditor extends StatelessWidget {
   final List<ImageModel> imageModels;
-  final Map<String, Color> kitColors;
+  final SelectedKitColor kitColors;
   final List<TextModel> textModels;
 
   final Function onPanUpdateImageController;
@@ -16,7 +18,7 @@ class DlsKitEditor extends StatelessWidget {
   final int pickedImageIndex;
   final PromoImageModel? promoImage;
 
-  final Map<String, LogoImageModel> logoModels;
+  final Map<Enum, LogoImageModel> logoModels;
 
   const DlsKitEditor({
     super.key,
